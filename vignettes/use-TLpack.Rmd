@@ -1,0 +1,21 @@
+---
+title: "use-TLpack"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{use-TLpack}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(TLpack)
+```
+The ReadFile function is integrated inside the OSLpack package
+
