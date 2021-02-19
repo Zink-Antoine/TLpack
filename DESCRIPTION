@@ -1,0 +1,15 @@
+Package: TLpack
+Title: Analyse TL measurement using Bayesian approach, MCMC, Gibbs and slice samplers
+Version: 0.0.0.9000
+Authors@R: 
+ person(given = "Antoine",
+           family = "Zink",
+           role = c("aut", "cre"),
+           email = "antoine.zink@culture.gouv.fr",
+           comment = c(ORCID = "https://orcid.org/0000-0001-7146-1101"))
+Description: Various function to analyze and plot TL measurement using MCMC code based on Gibbs and Slice samplers.
+License: CeCILL-2 | file LICENSE
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
