@@ -1,2 +1,2 @@
 # TLpack
-package for TL analysis using bayesian appraoch 
+package for TL analysis using bayesian approach 
