@@ -1,43 +1,55 @@
 #' Lum
 #' extracts TL measurements
 #'
-#' @param file [Risoe.BINfileData-class] (**required**) the BIN/BINX file
+#' @param files [list of Risoe.BINfileData-class] (**required**) the BIN/BINX file(s)
 #' @param ech [numeric] (**with default**) the sample number
 #' @param Doseb0 [numeric] (**with default**)  the reference of beta irradiation (in seconds)
 #' @param Dosea0 [numeric] (**with default**)  the reference of alpha irradiation (in seconds)
 #' @param alpha [logical] (**with default**) TRUE if alpha measurements are inclued. Based on the number of data files, the value is corrected
 #' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected
-#' @param TypLum [character] (*with default**) luminescence type "TL" = signal; "BG" = background
+#' @param TypLum [character] (**with default**) luminescence type "TL" = signal; "BG" = background
 #' @param Temp [numerical vector] (**with default**) the temperature range
 #'
-#' @return a list
+#' @return a list object
 #' @return $alpha
 #' @return $supra
-#' @return $b glowcurve corrected from background for beta irradiation
-#' @return $a glowcurve corrected from background for alpha irradiation
-#' @return $n glowcurve corrected from background for normalisation
-#' @return $Bb uncorrected glowcurve for beta irradiation
-#' @return $Ba uncorrected glowcurve for alpha irradiation
-#' @return $Bn uncorrected glowcurve for normalisation
-#' @return $bsup glowcurve corrected from background for supralinearity irradiation
-#' @return $nsup glowcurve corrected from background for supralinearity nomalisation
-#' @return $Bbsup uncorrected glowcurve for supralinearity irradiation
-#' @return $Bnsup uncorrected glowcurve for supralinearity nomalisation
-#' @return Temp.corr correction of the monitored temperature for Lexsyg readers
+#' @return $b
+#' glowcurve corrected from background for beta irradiation
+#' @return $a
+#' glowcurve corrected from background for alpha irradiation
+#' @return $n
+#' glowcurve corrected from background for normalisation
+#' @return $Bb
+#' uncorrected glowcurve for beta irradiation
+#' @return $Ba
+#' uncorrected glowcurve for alpha irradiation
+#' @return $Bn
+#' uncorrected glowcurve for normalisation
+#' @return $bsup
+#' glowcurve corrected from background for supralinearity irradiation
+#' @return $nsup
+#' glowcurve corrected from background for supralinearity nomalisation
+#' @return $Bbsup
+#' uncorrected glowcurve for supralinearity irradiation
+#' @return $Bnsup
+#' uncorrected glowcurve for supralinearity nomalisation
+#' @return $CanalTemp
+#' Temperature channel. channel = temperature for Risoe (SystemID=88); channel = Temperature-25 for Lexsyg reader (SYSTEMID=0)
 #'
+#' @export
 #'
-`Lum` <-
-function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"),Temp=seq(26,599))
+'Lum' <-
+function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"),Temp=seq(26,599))
 	{
 
-	D1<-Raw.Data(file,ech,1)
+	D1<-Raw.Data(files,ech,1)
+
+	if (D1$L==36) alpha<-FALSE
 
 	if (supra) {
-		if (length(file)==2)	D2<-Raw.Data(file,ech,2)
+		if (length(files)==2)	D2<-Raw.Data(files,ech,2)
 		else supra<-FALSE
 		}
-	if(file[[1]]@METADATA$SYSTEMID[1]==0)Temp.corr<-Temp-file[[1]]@METADATA$LOW[1]
-	if(file[[1]]@METADATA$SYSTEMID[1]==88)Temp.corr<-Temp
 
 	B1<-array(unlist(D1$Brut),dim=c(D1$T,D1$L))#pur matrix to calculate
 	Net1<-B1[,D1$TL]-B1[,D1$BG]
@@ -56,28 +68,27 @@ function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"
 
 	Disk<-seq(1,nbd)
 
-	if (D1$L==36){
-		alpha<-FALSE
+	CanalTemp<-mapply(Canal,Temp=Temp,files=list(files[[1]]))
 
+	if (D1$L==36){
 		Brutb<-array(D1$Brut[seq(1,18)],dim=c(cycle0,3,3),dimnames=list(TypLum,Doseb,seq(1,3)))
 		Brutn<-array(D1$Brut[seq(19,36)],dim=c(cycle0,1,9),dimnames=list(TypLum,Dosen,Disk))
 
-		Netb<-array(Net1[Temp.corr,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,Doseb,seq(1,3)))
-		Netn<-array(Net1[Temp.corr,seq(10,18)],dim=c(length(Temp),1,9),dimnames=list(Temp,Dosen,Disk))
+		Netb<-array(Net1[CanalTemp,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,Doseb,seq(1,3)))
+		Netn<-array(Net1[CanalTemp,seq(10,18)],dim=c(length(Temp),1,9),dimnames=list(Temp,Dosen,Disk))
 		}
 	else {
 		Brutb<-array(D1$Brut[seq(1,18)],dim=c(cycle0,3,3),dimnames=list(TypLum,Doseb,seq(1,3)))
 		Bruta<-array(D1$Brut[c(19,20,23,24,21,22,25,26)],dim=c(cycle0,2,2),dimnames=list(TypLum,Dosea,seq(4,5)))
 		Brutn<-array(D1$Brut[c(seq(27,44),45,46,49,50,47,48,51,52)],dim=c(cycle0,1,13),dimnames=list(TypLum,Dosen,Disk))
 
-		Netb<-array(Net1[Temp.corr,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,Doseb,seq(1,3)))
-		Neta<-array(Net1[Temp.corr,c(10,12,11,13)],dim=c(length(Temp),2,2),dimnames=list(Temp,Dosea,seq(4,5)))
-		Netn<-array(Net1[Temp.corr,c(seq(14,22),23,25,24,26)],dim=c(length(Temp),1,13),dimnames=list(Temp,Dosen,Disk))
+		Netb<-array(Net1[CanalTemp,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,Doseb,seq(1,3)))
+		Neta<-array(Net1[CanalTemp,c(10,12,11,13)],dim=c(length(Temp),2,2),dimnames=list(Temp,Dosea,seq(4,5)))
+		Netn<-array(Net1[CanalTemp,c(seq(14,22),23,25,24,26)],dim=c(length(Temp),1,13),dimnames=list(Temp,Dosen,Disk))
 		}
 
 	if (supra==TRUE){
-		if(file[[2]]@METADATA$SYSTEMID[1]==0)Temp.corr<-Temp-file[[2]]@METADATA$LOW[1]
-		if(file[[2]]@METADATA$SYSTEMID[1]==88)Temp.corr<-Temp
+	  CanalTemp.sup<-mapply(Canal,Temp=Temp,files=list(files[[2]]))
 
 		B2<-array(unlist(D2$Brut),dim=c(D2$T,D2$L))#matrix need to calculate
 
@@ -96,28 +107,49 @@ function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"
 		D2$Brutb<-array(D2$Brut[seq(1,18)],dim=c(cycle0,3,3),dimnames=list(TypLum,seq(1,3),Doseb2))
 		D2$Brutn<-array(D2$Brut[seq(19,36)],dim=c(cycle0,1,9),dimnames=list(TypLum,Dosen,Disk2))
 
-		Net2b<-array(Net2[Temp.corr,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,seq(1,3),Doseb2))
-		Net2n<-array(Net2[Temp.corr,seq(10,18)],dim=c(length(Temp),1,9),dimnames=list(Temp,Dosen,Disk2))
+		Net2b<-array(Net2[CanalTemp.sup,seq(1,9)],dim=c(length(Temp),3,3),dimnames=list(Temp,seq(1,3),Doseb2))
+		Net2n<-array(Net2[CanalTemp.sup,seq(10,18)],dim=c(length(Temp),1,9),dimnames=list(Temp,Dosen,Disk2))
 
 		}
 
 	if (!alpha){Neta<-"N/A";Bruta<-"N/A"}
 	if (!supra){Net2b<-"N/A";Net2n<-"N/A";D2<-list(Brutb="N/A",Brutn="N/A")}
 
-	Lum<-list(alpha=alpha,supra=supra,b=Netb,a=Neta,n=Netn,Bb=Brutb,Ba=Bruta,Bn=Brutn,bsup=Net2b,nsup=Net2n,Bbsup=D2$Brutb,Bnsup=D2$Brutn,Temp.corr=Temp.corr)
+	Lum<-list(alpha=alpha,supra=supra,b=Netb,a=Neta,n=Netn,Bb=Brutb,Ba=Bruta,Bn=Brutn,bsup=Net2b,nsup=Net2n,Bbsup=D2$Brutb,Bnsup=D2$Brutn,CanalTemp=CanalTemp,CanalTempsup=CanalTemp.sup)
 	return(Lum)
 	}
 
 ##########################
 
-Raw.Data<-function(file,ech,n.chauf) {
-	file.sel<-RW.File(file,n.chauf,file[[n.chauf]]@METADATA$SEL)
-	L<-length(file.sel)   #number of measures
+#' Raw.Data
+#'
+#' extract only the useful data, removing the pre-annealing measurements (if need)
+#'
+#' @param files [Risoe.BINfileData-class] (**required**) the BIN/BINX file
+#' @param ech [numeric] (**with default**) the sample number
+#' @param n.chauf [numeric](**required**) heat experiment number (1 - first heat; 2 - supralinearity)
+#'
+#' @return alist object with the following elements
+#' @return $Brut the data
+#' @return $L number of measurements without the furnace pre-annealing
+#' @return $T number of measuring points (1 point per degree)
+#' @return $TL Thermoluminescence numbering
+#' @return $BG background numbering
+#'
+#' @importFrom OSLpack ExtractFile
+#'
+#' @noRd
+#'
+#' @export
+#'
+Raw.Data<-function(files,ech,n.chauf) {
+	file.sel<-OSLpack::ExtractFile(files=files,n_file=n.chauf)[[n.chauf]]
+	L<-length(file.sel)   #number of measurements
 	corr<-L%%36
-	L<-L-corr   #number of measurements corrected for furnace preheating
-	T<-file.sel@METADATA$NPOINT[1]  # number of measuring points (1 point per degree)
+	L<-L-corr   #number of measurements without the furnace pre-annealing
+	T<-unique(file.sel@METADATA$NPOINT)  # number of measuring points (1 point per degree)
 	if (L==72)	L<-36#two samples
-	Brut<-file.sel@DATA[seq(1,L)+corr]  #Raw data from heating n# n.chauf after removal of the furnace preheating
+	Brut<-file.sel@DATA[seq(1,L)+corr]  #Raw data from heating n.chauf after removal of the furnace pre-annealing
 	if (ech==2){
 			Brut<-file.sel@DATA[seq(L,2*L)+corr]
 			}
@@ -129,15 +161,23 @@ Raw.Data<-function(file,ech,n.chauf) {
 }
 
 
-#############Rw.file function (internal)#########################
-#reconstructs a theoretical file to start from
-#a file containing an unusual sequence
-
-RW.File<-function(file,nfile,sequence){
-file.n<-file[[nfile]]
-file.n@DATA<-file.n@DATA[sequence]
-file.n@METADATA<-file.n@METADATA[sequence,]
-file.n@.RESERVED<-file.n@.RESERVED[sequence]
-return(file.n)
+###########################################
+#' Canal
+#'
+#' temperature channel
+#'
+#' @param Temp [vector (atomic or list)]  (required)
+#' @param files [Risoe.BINfileData-class] (**required**) single BIN/BINX file
+#'
+#' @return Canal channels corresponding to the temperatures.
+#'
+#' @noRd
+#' @export
+#'
+Canal<-function(Temp,files){
+  if(unique(files@METADATA$SYSTEMID)==0)CanalTemp<-Temp-unique(files@METADATA$LOW)
+  if(unique(files@METADATA$SYSTEMID)==88)CanalTemp<-Temp
+  CanalTemp
 }
+
 

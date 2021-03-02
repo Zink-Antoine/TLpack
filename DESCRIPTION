@@ -1,7 +1,7 @@
 Package: TLpack
 Title: Analyse TL measurement using Bayesian approach, MCMC, Gibbs and slice samplers
 Version: 0.0.0.9000
-Authors@R: 
+Authors@R:
  person(given = "Antoine",
            family = "Zink",
            role = c("aut", "cre"),
@@ -13,7 +13,10 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Suggests: 
+Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    OSLpack,
+    Luminescence
 VignetteBuilder: knitr
+Imports: OSLpack

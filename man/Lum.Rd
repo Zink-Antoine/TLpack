@@ -5,19 +5,11 @@
 \title{Lum
 extracts TL measurements}
 \usage{
-Lum(
-  file,
-  ech = 1,
-  Doseb0 = 90,
-  Dosea0 = 90,
-  alpha = TRUE,
-  supra = TRUE,
-  TypLum = c("TL", "BG"),
-  Temp = seq(26, 599)
-)
+Lum(files, ech = 1, Doseb0 = 90, Dosea0 = 90, alpha = TRUE,
+  supra = TRUE, TypLum = c("TL", "BG"), Temp = seq(26, 599))
 }
 \arguments{
-\item{file}{\linkS4class{Risoe.BINfileData} (\strong{required}) the BIN/BINX file}
+\item{files}{\linkS4class{list of Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
 
 \item{ech}{\link{numeric} (\strong{with default}) the sample number}
 
@@ -29,38 +21,49 @@ Lum(
 
 \item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected}
 
-\item{TypLum}{\link{character} (\emph{with default}*) luminescence type "TL" = signal; "BG" = background}
+\item{TypLum}{\link{character} (\strong{with default}) luminescence type "TL" = signal; "BG" = background}
 
 \item{Temp}{\link{numerical vector} (\strong{with default}) the temperature range}
 }
 \value{
-a list
+a list object
 
 $alpha
 
 $supra
 
-$b glowcurve corrected from background for beta irradiation
+$b
+glowcurve corrected from background for beta irradiation
 
-$a glowcurve corrected from background for alpha irradiation
+$a
+glowcurve corrected from background for alpha irradiation
 
-$n glowcurve corrected from background for normalisation
+$n
+glowcurve corrected from background for normalisation
 
-$Bb uncorrected glowcurve for beta irradiation
+$Bb
+uncorrected glowcurve for beta irradiation
 
-$Ba uncorrected glowcurve for alpha irradiation
+$Ba
+uncorrected glowcurve for alpha irradiation
 
-$Bn uncorrected glowcurve for normalisation
+$Bn
+uncorrected glowcurve for normalisation
 
-$bsup glowcurve corrected from background for supralinearity irradiation
+$bsup
+glowcurve corrected from background for supralinearity irradiation
 
-$nsup glowcurve corrected from background for supralinearity nomalisation
+$nsup
+glowcurve corrected from background for supralinearity nomalisation
 
-$Bbsup uncorrected glowcurve for supralinearity irradiation
+$Bbsup
+uncorrected glowcurve for supralinearity irradiation
 
-$Bnsup uncorrected glowcurve for supralinearity nomalisation
+$Bnsup
+uncorrected glowcurve for supralinearity nomalisation
 
-Temp.corr correction of the monitored temperature for Lexsyg readers
+$CanalTemp
+Temperature channel. channel = temperature for Risoe (SystemID=88); channel = Temperature-25 for Lexsyg reader (SYSTEMID=0)
 }
 \description{
 Lum
