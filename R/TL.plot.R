@@ -2,33 +2,34 @@
 #'
 #' plot for TL measurements
 #'
-#' @param File [list] (**required**) an output obtained by [OSLpack::ReadFile] function, i.e a list object incluing [Risoe.BINfileData-class] objects and the names of the corresponding BIN/BINX files
+#' @param file [Risoe.BINfileData] (**required**) the BIN/BINX file(s)
+#' @param nomFile [character] (**with default**) name of the BIN/BINX file
+# #' @param File [list] (**required**) an output obtained by [OSLpack::ReadFile] function, i.e a list object incluing [Risoe.BINfileData] objects and the names of the corresponding BIN/BINX files
 #' @param ech [numeric] (**with default**) the sample number
 #' @param Doseb0 [numeric] (**with default**)  the reference of beta irradiation (in seconds)
 #' @param Dosea0 [numeric] (**with default**)  the reference of alpha irradiation (in seconds)
 #' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected
 #' @param norm [logical] (**with default**) TRUE if the measurements are normalized.
-#' @param plateau [numerical vector] (**with default**) the plateau range for normalization
-#' @param Temp [numerical vector] (**with default**) the temperature range
-#' @param NumInv [string] (**with default**) the inventory number
-#' @param b.check [numerical list] (**with default**) list of beta curves to plot
-#' @param a.check [numerical list] (**with default**) list of alpha curves to plot
-#' @param sup.check [numerical list] (**with default**) list of supralinarity curves to plot
+#' @param plateau [numeric],[list] (**with default**) the plateau range for normalization
+#' @param Temp [numeric],[list] (**with default**) the temperature range
+#' @param NumInv [character] (**with default**) the inventory number
+#' @param b.check [numeric],[list] (**with default**) list of beta curves to plot
+#' @param a.check [numeric],[list] (**with default**) list of alpha curves to plot
+#' @param sup.check [numeric],[list] (**with default**) list of supralinarity curves to plot
 #'
-#' @return
+#' @return plot figures
+#'
+#' @importFrom graphics axis box lines par plot.default text title
 #'
 #' @export
 #'
 
 'TL.plot'<-
-function(File,ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,500),Temp=seq(26,599),NumInv="",b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9)) {
-
-	file<-File$FILE
-	nomFile<-File$NFILE
+function(file,nomFile="",ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,500),Temp=seq(26,599),NumInv="",b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9)) {
 
 	alpha<-Dosea0>1
-	plateau.corr<-mapply(Canal,Temp=plateau,files=list(file[[1]]))
-	if (supra) 	plateau.corr.sup<-mapply(Canal,Temp=plateau,files=list(file[[2]]))
+	plateau.corr<-mapply(Canal,Temp=plateau,file=list(file[[1]]))
+	if (supra) 	plateau.corr.sup<-mapply(Canal,Temp=plateau,file=list(file[[2]]))
 
 	L<-Lum(file,ech=ech,Doseb0=Doseb0,Dosea0=Dosea0,alpha=alpha,supra=supra,Temp=Temp)
 
@@ -61,7 +62,7 @@ function(File,ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,5
 	axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 	axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 	box()
-	title(xlab="Temperature (°C)",ylab="Luminescence (ua)",cex.lab=0.7,line=1)
+	title(xlab=paste("Temperature (\u00B0","C)",sep=""),ylab="Luminescence (ua)",cex.lab=0.7,line=1)
 	text(50,max(Ib[seq(200,450),,])*1.05,"Irradiation beta",cex=1,adj=0)
 	for (i in 1:3){
 		for (j in 1:3){
@@ -75,7 +76,7 @@ function(File,ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,5
 		axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 		axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 		box()
-		title(xlab="Temperature (°C)",ylab="Luminescence (ua)",cex.lab=0.7,line=1)
+		title(xlab=paste("Temperature (\u00B0","C)",sep=""),ylab="Luminescence (ua)",cex.lab=0.7,line=1)
 		text(50,max(Ia[seq(200,450),,])*1.05,"Irradiation alpha",cex=1,adj=0)
 		for (i in 1:3){
 			lines(Temp,Ib[,1,i],col=1*b.check(i))
@@ -92,8 +93,8 @@ function(File,ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,5
 		axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 		axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 		box()
-		title(xlab="Temperature (?C)",ylab="Luminescence (ua)",cex.lab=0.7,line=1)
-		text(50,max(Isup[seq(200,450),,])*1.05,"Supralinéarité",cex=1,adj=0)
+		title(xlab=paste("Temperature (\u00B0","C)",sep=""),ylab="Luminescence (ua)",cex.lab=0.7,line=1)
+		text(50,max(Isup[seq(200,450),,])*1.05,paste("Supralin\u00e9","arit\u00e9",sep=""),cex=1,adj=0)
 		for (j in 1:3){
 			for (i in 1:3){
 				lines(Temp,Isup[,j,i],col=i*sup.check[3*(i-1)+j])
@@ -106,7 +107,7 @@ function(File,ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,5
 	position<-c(-5,30,70)
 	couleur<-c("black","red","green")
 	beta.text<-c("beta : Nat","Nat+10.4Gy","Nat+21,0Gy")
-	alpha.text<-c("alpha : Nat","Nat+10.6µm-2","Nat+21.1µm-2")
+	alpha.text<-c("alpha : Nat",paste("Nat+10.6\u00b5","m-2",sep=""),paste("Nat+21.1\u00b5","m-2",sep=""))
 	supra.text<-c("supra : 10.4Gy","     21.0Gy","31.4Gy")
 
 	text(50,90,paste("n? inv. ",NumInv))

@@ -1,14 +1,13 @@
 #' Lum
 #' extracts TL measurements
 #'
-#' @param files [list of Risoe.BINfileData-class] (**required**) the BIN/BINX file(s)
-#' @param ech [numeric] (**with default**) the sample number
+#' @inheritParams TL.plot
+#'
 #' @param Doseb0 [numeric] (**with default**)  the reference of beta irradiation (in seconds)
 #' @param Dosea0 [numeric] (**with default**)  the reference of alpha irradiation (in seconds)
-#' @param alpha [logical] (**with default**) TRUE if alpha measurements are inclued. Based on the number of data files, the value is corrected
-#' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected
-#' @param TypLum [character] (**with default**) luminescence type "TL" = signal; "BG" = background
-#' @param Temp [numerical vector] (**with default**) the temperature range
+#' @param alpha [logical] (**with default**) TRUE if alpha measurements are inclued. Based on the number of data file, the value is corrected
+#' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data file, the value is corrected
+#' @param TypLum [character],[list] (**with default**) luminescence type "TL" = signal; "BG" = background
 #'
 #' @return a list object
 #' @return $alpha
@@ -39,15 +38,15 @@
 #' @export
 #'
 'Lum' <-
-function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"),Temp=seq(26,599))
+function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"),Temp=seq(26,599))
 	{
 
-	D1<-Raw.Data(files,ech,1)
+	D1<-Raw.Data(file,ech,1)
 
 	if (D1$L==36) alpha<-FALSE
 
 	if (supra) {
-		if (length(files)==2)	D2<-Raw.Data(files,ech,2)
+		if (length(file)==2)	D2<-Raw.Data(file,ech,2)
 		else supra<-FALSE
 		}
 
@@ -68,7 +67,7 @@ function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG
 
 	Disk<-seq(1,nbd)
 
-	CanalTemp<-mapply(Canal,Temp=Temp,files=list(files[[1]]))
+	CanalTemp<-mapply(Canal,Temp=Temp,file=list(file[[1]]))
 
 	if (D1$L==36){
 		Brutb<-array(D1$Brut[seq(1,18)],dim=c(cycle0,3,3),dimnames=list(TypLum,Doseb,seq(1,3)))
@@ -88,7 +87,7 @@ function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG
 		}
 
 	if (supra==TRUE){
-	  CanalTemp.sup<-mapply(Canal,Temp=Temp,files=list(files[[2]]))
+	  CanalTemp.sup<-mapply(Canal,Temp=Temp,file=list(file[[2]]))
 
 		B2<-array(unlist(D2$Brut),dim=c(D2$T,D2$L))#matrix need to calculate
 
@@ -113,7 +112,7 @@ function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG
 		}
 
 	if (!alpha){Neta<-"N/A";Bruta<-"N/A"}
-	if (!supra){Net2b<-"N/A";Net2n<-"N/A";D2<-list(Brutb="N/A",Brutn="N/A")}
+	if (!supra){Net2b<-"N/A";Net2n<-"N/A";D2<-list(Brutb="N/A",Brutn="N/A");CanalTemp.sup<-"N/A"}
 
 	Lum<-list(alpha=alpha,supra=supra,b=Netb,a=Neta,n=Netn,Bb=Brutb,Ba=Bruta,Bn=Brutn,bsup=Net2b,nsup=Net2n,Bbsup=D2$Brutb,Bnsup=D2$Brutn,CanalTemp=CanalTemp,CanalTempsup=CanalTemp.sup)
 	return(Lum)
@@ -125,7 +124,7 @@ function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG
 #'
 #' extract only the useful data, removing the pre-annealing measurements (if need)
 #'
-#' @param files [Risoe.BINfileData-class] (**required**) the BIN/BINX file
+#' @param file [Risoe.BINfileData] (**required**) the BIN/BINX file
 #' @param ech [numeric] (**with default**) the sample number
 #' @param n.chauf [numeric](**required**) heat experiment number (1 - first heat; 2 - supralinearity)
 #'
@@ -140,24 +139,22 @@ function(files,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG
 #'
 #' @noRd
 #'
-#' @export
-#'
-Raw.Data<-function(files,ech,n.chauf) {
-	file.sel<-OSLpack::ExtractFile(files=files,n_file=n.chauf)[[n.chauf]]
-	L<-length(file.sel)   #number of measurements
-	corr<-L%%36
-	L<-L-corr   #number of measurements without the furnace pre-annealing
-	T<-unique(file.sel@METADATA$NPOINT)  # number of measuring points (1 point per degree)
-	if (L==72)	L<-36#two samples
-	Brut<-file.sel@DATA[seq(1,L)+corr]  #Raw data from heating n.chauf after removal of the furnace pre-annealing
-	if (ech==2){
-			Brut<-file.sel@DATA[seq(L,2*L)+corr]
-			}
-	TL<-seq(1,L-1,2) # TL numbering
-	BG<-seq(2,L,2) # BG numbering
+Raw.Data<-function(file,ech,n.chauf) {
+  file.sel<-OSLpack::ExtractFile(file=file,n_file=n.chauf)[[n.chauf]]
+  L<-length(file.sel)   #number of measurements
+  corr<-L%%36
+  L<-L-corr   #number of measurements without the furnace pre-annealing
+  T<-unique(file.sel@METADATA$NPOINT)  # number of measuring points (1 point per degree)
+  if (L==72)	L<-36#two samples
+  Brut<-file.sel@DATA[seq(1,L)+corr]  #Raw data from heating n.chauf after removal of the furnace pre-annealing
+  if (ech==2){
+    Brut<-file.sel@DATA[seq(L,2*L)+corr]
+  }
+  TL<-seq(1,L-1,2) # TL numbering
+  BG<-seq(2,L,2) # BG numbering
 
-	RD<-list(Brut=Brut,L=L,T=T,TL=TL,BG=BG)
-	return(RD)
+  RD<-list(Brut=Brut,L=L,T=T,TL=TL,BG=BG)
+  return(RD)
 }
 
 
@@ -166,17 +163,16 @@ Raw.Data<-function(files,ech,n.chauf) {
 #'
 #' temperature channel
 #'
-#' @param Temp [vector (atomic or list)]  (required)
-#' @param files [Risoe.BINfileData-class] (**required**) single BIN/BINX file
+#' @param Temp [vector]  (required)
+#' @param file [Risoe.BINfileData] (**required**) single BIN/BINX file
 #'
 #' @return Canal channels corresponding to the temperatures.
 #'
 #' @noRd
-#' @export
 #'
-Canal<-function(Temp,files){
-  if(unique(files@METADATA$SYSTEMID)==0)CanalTemp<-Temp-unique(files@METADATA$LOW)
-  if(unique(files@METADATA$SYSTEMID)==88)CanalTemp<-Temp
+Canal<-function(Temp,file){
+  if(unique(file@METADATA$SYSTEMID)==0)CanalTemp<-Temp-unique(file@METADATA$LOW)
+  if(unique(file@METADATA$SYSTEMID)==88)CanalTemp<-Temp
   CanalTemp
 }
 

@@ -4,13 +4,26 @@
 \alias{TL.plot}
 \title{TL.plot}
 \usage{
-TL.plot(File, ech = 1, Doseb0 = 90, Dosea0 = 90, supra = FALSE,
-  norm = FALSE, plateau = seq(200, 500), Temp = seq(26, 599),
-  NumInv = "", b.check = rep(1, 9), a.check = rep(1, 4),
-  sup.check = rep(1, 9))
+TL.plot(
+  file,
+  nomFile = "",
+  ech = 1,
+  Doseb0 = 90,
+  Dosea0 = 90,
+  supra = FALSE,
+  norm = FALSE,
+  plateau = seq(200, 500),
+  Temp = seq(26, 599),
+  NumInv = "",
+  b.check = rep(1, 9),
+  a.check = rep(1, 4),
+  sup.check = rep(1, 9)
+)
 }
 \arguments{
-\item{File}{\link{list} (\strong{required}) an output obtained by \link[OSLpack:ReadFile]{OSLpack::ReadFile} function, i.e a list object incluing \linkS4class{Risoe.BINfileData} objects and the names of the corresponding BIN/BINX files}
+\item{file}{\link{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
+
+\item{nomFile}{\link{character} (\strong{with default}) name of the BIN/BINX file}
 
 \item{ech}{\link{numeric} (\strong{with default}) the sample number}
 
@@ -22,17 +35,20 @@ TL.plot(File, ech = 1, Doseb0 = 90, Dosea0 = 90, supra = FALSE,
 
 \item{norm}{\link{logical} (\strong{with default}) TRUE if the measurements are normalized.}
 
-\item{plateau}{\link{numerical vector} (\strong{with default}) the plateau range for normalization}
+\item{plateau}{\link{numeric},\link{list} (\strong{with default}) the plateau range for normalization}
 
-\item{Temp}{\link{numerical vector} (\strong{with default}) the temperature range}
+\item{Temp}{\link{numeric},\link{list} (\strong{with default}) the temperature range}
 
-\item{NumInv}{\link{string} (\strong{with default}) the inventory number}
+\item{NumInv}{\link{character} (\strong{with default}) the inventory number}
 
-\item{b.check}{\link{numerical list} (\strong{with default}) list of beta curves to plot}
+\item{b.check}{\link{numeric},\link{list} (\strong{with default}) list of beta curves to plot}
 
-\item{a.check}{\link{numerical list} (\strong{with default}) list of alpha curves to plot}
+\item{a.check}{\link{numeric},\link{list} (\strong{with default}) list of alpha curves to plot}
 
-\item{sup.check}{\link{numerical list} (\strong{with default}) list of supralinarity curves to plot}
+\item{sup.check}{\link{numeric},\link{list} (\strong{with default}) list of supralinarity curves to plot}
+}
+\value{
+plot figures
 }
 \description{
 plot for TL measurements

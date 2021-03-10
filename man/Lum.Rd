@@ -5,11 +5,19 @@
 \title{Lum
 extracts TL measurements}
 \usage{
-Lum(files, ech = 1, Doseb0 = 90, Dosea0 = 90, alpha = TRUE,
-  supra = TRUE, TypLum = c("TL", "BG"), Temp = seq(26, 599))
+Lum(
+  file,
+  ech = 1,
+  Doseb0 = 90,
+  Dosea0 = 90,
+  alpha = TRUE,
+  supra = TRUE,
+  TypLum = c("TL", "BG"),
+  Temp = seq(26, 599)
+)
 }
 \arguments{
-\item{files}{\linkS4class{list of Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
+\item{file}{\link{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
 
 \item{ech}{\link{numeric} (\strong{with default}) the sample number}
 
@@ -17,13 +25,13 @@ Lum(files, ech = 1, Doseb0 = 90, Dosea0 = 90, alpha = TRUE,
 
 \item{Dosea0}{\link{numeric} (\strong{with default})  the reference of alpha irradiation (in seconds)}
 
-\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are inclued. Based on the number of data files, the value is corrected}
+\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are inclued. Based on the number of data file, the value is corrected}
 
-\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected}
+\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are inclued. Based on the number of data file, the value is corrected}
 
-\item{TypLum}{\link{character} (\strong{with default}) luminescence type "TL" = signal; "BG" = background}
+\item{TypLum}{\link{character},\link{list} (\strong{with default}) luminescence type "TL" = signal; "BG" = background}
 
-\item{Temp}{\link{numerical vector} (\strong{with default}) the temperature range}
+\item{Temp}{\link{numeric},\link{list} (\strong{with default}) the temperature range}
 }
 \value{
 a list object
