@@ -16,6 +16,11 @@ RoxygenNote: 7.1.1
 Suggests:
     knitr,
     rmarkdown,
-    Luminescence
+    RLumModel
 VignetteBuilder: knitr
-Imports: OSLpack
+Imports: 
+    Slice,
+    OSLpack,
+    stats,
+    coda,
+    Luminescence
