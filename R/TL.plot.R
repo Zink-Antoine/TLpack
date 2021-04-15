@@ -2,13 +2,12 @@
 #'
 #' plot for TL measurements
 #'
-#' @param file [Risoe.BINfileData] (**required**) the BIN/BINX file(s)
+#' @param file [Risoe.BINfileData-class] (**required**) the BIN/BINX file(s)
 #' @param nomFile [character] (**with default**) name of the BIN/BINX file
-# #' @param File [list] (**required**) an output obtained by [OSLpack::ReadFile] function, i.e a list object incluing [Risoe.BINfileData] objects and the names of the corresponding BIN/BINX files
 #' @param ech [numeric] (**with default**) the sample number
 #' @param Doseb0 [numeric] (**with default**)  the reference of beta irradiation (in seconds)
 #' @param Dosea0 [numeric] (**with default**)  the reference of alpha irradiation (in seconds)
-#' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected
+#' @param supra [logical] (**with default**) TRUE if supra measurements are included. Based on the number of data files, the value is corrected
 #' @param norm [logical] (**with default**) TRUE if the measurements are normalized.
 #' @param plateau [numeric],[list] (**with default**) the plateau range for normalization
 #' @param Temp [numeric],[list] (**with default**) the temperature range
@@ -25,7 +24,7 @@
 #'
 
 'TL.plot'<-
-function(file,nomFile="",ech=1,Doseb0=90,Dosea0=90,supra=FALSE,norm=FALSE,plateau=seq(200,500),Temp=seq(26,599),NumInv="",b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9)) {
+function(file,nomFile="",ech=1,Doseb0=90,Dosea0=0,supra=FALSE,norm=FALSE,plateau=seq(200,500),Temp=seq(26,599),NumInv="",b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9)) {
 
 	alpha<-Dosea0>1
 	plateau.corr<-mapply(Canal,Temp=plateau,file=list(file[[1]]))

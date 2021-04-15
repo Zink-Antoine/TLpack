@@ -1,8 +1,84 @@
-#####Analyse MC TL (slice +gibbs) d'apr�s gibbs1.R Hickey (2006)
+#####
+#' Slice1
+#'
+#' MC Analysis TL (slice +gibbs) following gibbs1.R Hickey (2006)
+#' extrapolation y0=0 (gibbs1)
+#' additional scalar variable T (Slice sampler)
+#'
+#' @param Dose [numeric] (**required**) set of the irradiation doses
+#' @param df.T [matrix] (**required**) Luminescence data: the temperatures
+#' @param df.y [matrix] (**required**) Luminescence data; the luminescence signal
+#' @param mu_b [numeric] (**required**) Prior of the slope's average
+#' @param mu_0  [numeric] (**required**) Prior of the true dose's average
+#' @param var_b [numeric] (**required**) Prior of the slope's variance
+#' @param var_0 [numeric] (**required**) Prior of the true dose's variance
+#' @param var_y [numeric] (**required**) Prior of the intensity's variance
+#' @param n.iter [numeric] (**required**) the number of iteration
+#'
+#' @import Slice
+#' @import stats
+#'
+#' @return an (n.iter x 3)-matrix
+#' x0 'True' dose value
+#' b slope
+#' T Temperature
+#'
+#' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
+#' @references chapter 3 and Appendix G.1
+#' @references Slice sampler: Neal, R. 2003. « Slice Sampling ». Annals of Statistics 31 (3): 705‑67.
+#'
+#' @export
+#'
+#' @examples
+#'  #TL example from RLumModel
+#' require(RLumModel)
+#' #multiples TL calculées avec RLumModel##########
+#' #call function "model_LuminescenceSignals", model = "Bailey2001"
+#' # the irradiation dose is varied and then compared.
+#' irradiation_dose <- seq(from = 0,to = 100,by = 20)
+#' model.output <- lapply(irradiation_dose,
+#'       function(x){
+#'            sequence <- list(IRR = c(20, x, 1),
+#'               #PH = c(220, 10, 5),
+#'               TL=c(20,400,5))
+#'            data <- model_LuminescenceSignals(
+#'               sequence = sequence,
+#'               model = "Bailey2001",
+#'               plot = FALSE,
+#'               verbose = FALSE)
+#'            return(get_RLum(data, recordType = "TL$", drop = FALSE))
+#' })
+#' ##combine output curves
+#' TL_curve.merged <- merge_RLum(model.output)
+#' ##plot
+#' plot_RLum(
+#'  object = TL_curve.merged,
+#'  xlab = "Temperature [°C]",
+#'  ylab = "TL signal [a.u.]",
+#'  main = "TL signal with various dose",
+#'  legend.text = paste("dose", irradiation_dose, "Gy"),
+#'  combine = TRUE)
+#' ##
+#' n.pt<-length(TL_curve.merged[1]$data[,1])
+#' n.irr<-length(irradiation_dose)
+#' y<-x<-array(dim=c(n.pt,n.irr))
+#' for (i in 1:n.irr){
+#'  x[,i]<-TL_curve.merged[i]$data[,1]
+#'  y[,i]<-TL_curve.merged[i]$data[,2]
+#' }
+#'
+#' Dose<-seq(20,120,20)
+#' df.T<-x
+#' df.y<-y
+#' mu_b<-2500
+#' mu_0<- 0
+#' var_b<-2500
+#' var_0<-10
+#' var_y<-10
+#' n.iter<-10
+#' Slice1(Dose,df.T,df.y,mu_b,mu_0,var_b,var_0,var_y,n.iter)
 Slice1<-
 function (Dose,df.T,df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter) {
-#extrapolation y0=0
-#nouvelle inconnue T scalaire
 
 mat <- matrix(ncol=3, nrow=n.iter)
 x0 <- 1
@@ -16,17 +92,16 @@ data.y<-df.y
 
 mcInit<-list()
 for (j in 1:ncol(data.y)){
-	mcInit[[j]]<-Slice.Init(data.T[,j],data.y[,j])
+	mcInit[[j]]<-Slice_Init(data.T[,j],data.y[,j])
 }
 
 for (i in 2:n.iter) {
-#calcul par slice de la temp�rature T
-	run<-Slice.Run(mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,data.T)
+#Temperature calculation using Slice sampler
+	run<-Slice_Run(T,mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,data.T)
 	T<-run[1]
 	L<<-run[2]
 	R<<-run[3]
 	y0<<-run[4]
-	#print(c(i,T))
 	for (j in 2:ncol(data.y)){
 		foo.x<-mcInit[[j]]$foo.x
 		foo.y<-mcInit[[j]]$foo.y
@@ -37,8 +112,8 @@ for (i in 2:n.iter) {
 			L<-Sol.hat[2]
 			R<-Sol.hat[3]
 			#print(c(i,T))
-			if (y0>foo.x(T)){					
-					run<-Slice.Run(foo.x,foo.y,hist.y,data.T)
+			if (y0>foo.x(T)){
+					run<-Slice_Run(T,foo.x,foo.y,hist.y,data.T)
 					T<-run[1]
 					L<-run[2]
 					R<-run[3]
@@ -46,7 +121,8 @@ for (i in 2:n.iter) {
 					}
 		}
 	}
-#fin du slice
+#Slice's end
+
 m<-which(data.T[,1]<round(T)+0.1&data.T[,1]>round(T)-0.1)
 
 sum_xy <- sum((Dose)*(data.y[m,data.x]))

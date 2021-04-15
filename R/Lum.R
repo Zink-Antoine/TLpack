@@ -3,10 +3,7 @@
 #'
 #' @inheritParams TL.plot
 #'
-#' @param Doseb0 [numeric] (**with default**)  the reference of beta irradiation (in seconds)
-#' @param Dosea0 [numeric] (**with default**)  the reference of alpha irradiation (in seconds)
-#' @param alpha [logical] (**with default**) TRUE if alpha measurements are inclued. Based on the number of data file, the value is corrected
-#' @param supra [logical] (**with default**) TRUE if supra measurements are inclued. Based on the number of data file, the value is corrected
+#' @param alpha [logical] (**with default**) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected
 #' @param TypLum [character],[list] (**with default**) luminescence type "TL" = signal; "BG" = background
 #'
 #' @return a list object

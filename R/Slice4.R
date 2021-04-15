@@ -1,4 +1,30 @@
-#####Analyse MC TL (slice +gibbs) d'apr�s gibbs4.R Hickey (2006)
+#' Slice4
+#'
+#' MC Analysis TL (slice +gibbs) following gibbs4.R Hickey (2006)
+#' Bayesian approach without expert judgement
+#' additional scalar variable T (Slice sampler)
+#'
+#'
+#' @inheritParams Slice1
+#' @param k [numeric] (**required**) the number of parameters in the group
+#' involving sigma
+#'
+#' @import Slice
+#'
+#' @return an (r × 5)-matrix,
+#' x0 'True' dose value
+#' sigma2 variance
+#' alpha intercept
+#' beta slope
+#' T Temperature
+#'
+#' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
+#' @references chapter 6.3.6 and Appendix G.7
+#' @references Slice sampler: Neal, R. 2003. « Slice Sampling ». Annals of Statistics 31 (3): 705‑67.
+#'
+#'
+#' @export
+#'
 Slice4<-
 function (Dose,df.T,df.y, k=1, n.iter) {
 #nouvelle inconnue T scalaire
@@ -19,13 +45,12 @@ n.x<-seq(1,n)
 
 mcInit<-list()
 for (j in 1:ncol(df.y)){
-	mcInit[[j]]<-Slice.Init(df.T[,j],df.y[,j])
+	mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
 }
 
 for (i in 2:n.iter) {
-
-#calcul par slice de la temp�rature T
-	run<-Slice.Run(mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,df.T)
+#Temperature calculation using Slice sampler
+  run<-Slice_Run(mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,df.T)
 	T<-run[1]
 	L<-run[2]
 	R<-run[3]
@@ -39,8 +64,8 @@ for (i in 2:n.iter) {
 			T<-Sol.hat[1]
 			L<-Sol.hat[2]
 			R<-Sol.hat[3]
-			if (y0>foo.x(T)){					
-					run<-Slice.Run(foo.x,foo.y,hist.y,df.T)
+			if (y0>foo.x(T)){
+					run<-Slice_Run(foo.x,foo.y,hist.y,df.T)
 					T<-run[1]
 					L<-run[2]
 					R<-run[3]
@@ -48,7 +73,7 @@ for (i in 2:n.iter) {
 					}
 		}
 	}
-#fin du slice
+#slice's end
 
 m<-which(df.T[,1]<round(T)+0.1&df.T[,1]>round(T)-0.1)
 

@@ -1,10 +1,29 @@
-
-#####Analyse MC TL (slice +gibbs) d'après regression lineaire
+##
+#' Slice5
+#'
+#'
+#'
+#' @inheritParams Slice1
+#' @param inv [logical] (**with default**) TRUE to calculate the inverse estimator.
+#' Default is FALSE: i.e. the direct estimator
+#' @param n.burnin [numeric] (**with default**)	number of iterations to discard at the beginning (burn in).
+#'  Default is n.iter/2, that is, discarding the first half of the simulations.
+#' @param n.thin [numeric] (**with default**) thinning rate. Must be a positive integer. Set n.thin > 1 to save memory and computation time if n.iter is large.
+#' Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there are at least 20 simulations.
+#'
+#' @import Slice
+#' @import coda
+#'
+#' @return an (r Ã— 4)-matrix,
+#' alpha intercept
+#' beta slope
+#' sigma2 variance
+#' T Temperature
+#'
+#' @export
+#'
 Slice5<-
-function (Dose,df.T,df.y, n.iter,inv=FALSE,burnin=1,thin=1) {
-#nouvelle inconnue T scalaire
-
-require(coda)
+function (Dose,df.T,df.y, n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10)) {
 
 mat <- matrix(ncol=4, nrow=n.iter)
 T<-300
@@ -20,12 +39,12 @@ n.y<-seq(1,n)
 
 mcInit<-list()
 for (j in 1:ncol(df.y)){
-	mcInit[[j]]<-Slice.Init(df.T[,j],df.y[,j])
+	mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
 }
 
 for (i in 2:n.iter) {
-#calcul par slice de la température T
-	run<-Slice.Run(T,mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,df.T)
+  #Temperature calculation using Slice sample
+	run<-Slice_Run(T,mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,df.T)
 	T<-run[1]
 	L<-run[2]
 	R<-run[3]
@@ -39,8 +58,8 @@ for (i in 2:n.iter) {
 			T<-Sol.hat[1]
 			L<-Sol.hat[2]
 			R<-Sol.hat[3]
-			if (y0>foo.x(T)){					
-					run<-Slice.Run(T,foo.x,foo.y,hist.y,df.T)
+			if (y0>foo.x(T)){
+					run<-Slice_Run(T,foo.x,foo.y,hist.y,df.T)
 					T<-run[1]
 					L<-run[2]
 					R<-run[3]
@@ -48,14 +67,13 @@ for (i in 2:n.iter) {
 					}
 		}
 	}
-#fin du slice
-
+#slice's end
 
 m<-which(df.T[,1]<round(T)+0.1&df.T[,1]>round(T)-0.1)
 if (inv) {
 	Y<-Dose
 	X<-df.y[m,n.y]
-} 
+}
 else{
 	X<-Dose
 	Y<-df.y[m,n.y]
@@ -76,8 +94,7 @@ sigma2<-1/tau
 mat[i,]<-c(alpha,beta,sigma2,T)
 }
 colnames(mat)<-c("intercept","x","sigma2","Temperature")
-mat<-mat[seq(burnin,n.iter,thin),]
+mat<-mat[seq(n.burnin,n.iter,n.thin),]
 as.mcmc(mat)
 }
-
 
