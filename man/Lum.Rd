@@ -17,7 +17,7 @@ Lum(
 )
 }
 \arguments{
-\item{file}{\link{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
+\item{file}{\linkS4class{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
 
 \item{ech}{\link{numeric} (\strong{with default}) the sample number}
 
@@ -25,9 +25,9 @@ Lum(
 
 \item{Dosea0}{\link{numeric} (\strong{with default})  the reference of alpha irradiation (in seconds)}
 
-\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are inclued. Based on the number of data file, the value is corrected}
+\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected}
 
-\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are inclued. Based on the number of data file, the value is corrected}
+\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are included. Based on the number of data files, the value is corrected}
 
 \item{TypLum}{\link{character},\link{list} (\strong{with default}) luminescence type "TL" = signal; "BG" = background}
 

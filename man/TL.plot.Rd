@@ -9,7 +9,7 @@ TL.plot(
   nomFile = "",
   ech = 1,
   Doseb0 = 90,
-  Dosea0 = 90,
+  Dosea0 = 0,
   supra = FALSE,
   norm = FALSE,
   plateau = seq(200, 500),
@@ -21,7 +21,7 @@ TL.plot(
 )
 }
 \arguments{
-\item{file}{\link{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
+\item{file}{\linkS4class{Risoe.BINfileData} (\strong{required}) the BIN/BINX file(s)}
 
 \item{nomFile}{\link{character} (\strong{with default}) name of the BIN/BINX file}
 
@@ -31,7 +31,7 @@ TL.plot(
 
 \item{Dosea0}{\link{numeric} (\strong{with default})  the reference of alpha irradiation (in seconds)}
 
-\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are inclued. Based on the number of data files, the value is corrected}
+\item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are included. Based on the number of data files, the value is corrected}
 
 \item{norm}{\link{logical} (\strong{with default}) TRUE if the measurements are normalized.}
 
