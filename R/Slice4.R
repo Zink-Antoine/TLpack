@@ -50,26 +50,26 @@ for (j in 1:ncol(df.y)){
 
 for (i in 2:n.iter) {
 #Temperature calculation using Slice sampler
-  run<-Slice_Run(mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,df.T)
-	T<-run[1]
-	L<-run[2]
-	R<-run[3]
-	y0<-run[4]
+  run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y)
+	T<-run[[1]]
+	L<-run[[2]]
+	R<-run[[3]]
+	y0<-run[[4]]
 	for (j in 2:ncol(df.y)){
-		foo.x<-mcInit[[j]]$foo.x
-		foo.y<-mcInit[[j]]$foo.y
-		hist.y<-mcInit[[j]]$hist.y
-		if (y0>foo.x(T)){
-			Sol.hat<-Shrink(foo.x,T,y0,L,R) #shrinkage
-			T<-Sol.hat[1]
-			L<-Sol.hat[2]
-			R<-Sol.hat[3]
-			if (y0>foo.x(T)){
-					run<-Slice_Run(foo.x,foo.y,hist.y,df.T)
-					T<-run[1]
-					L<-run[2]
-					R<-run[3]
-					y0<-run[4]
+		foo_x<-mcInit[[j]]$foo_x
+		foo_y<-mcInit[[j]]$foo_y
+		hist_y<-mcInit[[j]]$hist_y
+		if (y0>foo_x(T)){
+			Sol.hat<-Shrink(foo_x,T,y0,L,R) #shrinkage
+			T<-Sol.hat[[1]]
+			L<-Sol.hat[[2]]
+			R<-Sol.hat[[3]]
+			if (y0>foo_x(T)){
+					run<-Slice_Run(T,foo_x,foo_y,hist_y)
+					T<-run[[1]]
+					L<-run[[2]]
+					R<-run[[3]]
+					y0<-run[[4]]
 					}
 		}
 	}

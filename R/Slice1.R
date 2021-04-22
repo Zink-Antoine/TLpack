@@ -30,53 +30,11 @@
 #' @export
 #'
 #' @examples
-#'  #TL example from RLumModel
-#' require(RLumModel)
-#' #multiples TL calculées avec RLumModel##########
-#' #call function "model_LuminescenceSignals", model = "Bailey2001"
-#' # the irradiation dose is varied and then compared.
-#' irradiation_dose <- seq(from = 0,to = 100,by = 20)
-#' model.output <- lapply(irradiation_dose,
-#'       function(x){
-#'            sequence <- list(IRR = c(20, x, 1),
-#'               #PH = c(220, 10, 5),
-#'               TL=c(20,400,5))
-#'            data <- model_LuminescenceSignals(
-#'               sequence = sequence,
-#'               model = "Bailey2001",
-#'               plot = FALSE,
-#'               verbose = FALSE)
-#'            return(get_RLum(data, recordType = "TL$", drop = FALSE))
-#' })
-#' ##combine output curves
-#' TL_curve.merged <- merge_RLum(model.output)
-#' ##plot
-#' plot_RLum(
-#'  object = TL_curve.merged,
-#'  xlab = "Temperature [°C]",
-#'  ylab = "TL signal [a.u.]",
-#'  main = "TL signal with various dose",
-#'  legend.text = paste("dose", irradiation_dose, "Gy"),
-#'  combine = TRUE)
-#' ##
-#' n.pt<-length(TL_curve.merged[1]$data[,1])
-#' n.irr<-length(irradiation_dose)
-#' y<-x<-array(dim=c(n.pt,n.irr))
-#' for (i in 1:n.irr){
-#'  x[,i]<-TL_curve.merged[i]$data[,1]
-#'  y[,i]<-TL_curve.merged[i]$data[,2]
-#' }
-#'
-#' Dose<-seq(20,120,20)
-#' df.T<-x
-#' df.y<-y
-#' mu_b<-2500
-#' mu_0<- 0
-#' var_b<-2500
-#' var_0<-10
-#' var_y<-10
-#' n.iter<-10
+#' ##load data
+#' data(multiTL, envir = environment())
+#' attach(multiTL)
 #' Slice1(Dose,df.T,df.y,mu_b,mu_0,var_b,var_0,var_y,n.iter)
+#' detach(multiTL)
 Slice1<-
 function (Dose,df.T,df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter) {
 
@@ -97,32 +55,32 @@ for (j in 1:ncol(data.y)){
 
 for (i in 2:n.iter) {
 #Temperature calculation using Slice sampler
-	run<-Slice_Run(T,mcInit[[1]]$foo.x,mcInit[[1]]$foo.y,mcInit[[1]]$hist.y,data.T)
-	T<-run[1]
-	L<<-run[2]
-	R<<-run[3]
-	y0<<-run[4]
+	run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y)
+	T<-run[[1]]
+	L<<-run[[2]]
+	R<<-run[[3]]
+	y0<<-run[[4]]
 	for (j in 2:ncol(data.y)){
-		foo.x<-mcInit[[j]]$foo.x
-		foo.y<-mcInit[[j]]$foo.y
-		hist.y<-mcInit[[j]]$hist.y
-		if (y0>foo.x(T)){
-			Sol.hat<-Shrink(foo.x,T,y0,L,R) #shrinkage
-			T<-Sol.hat[1]
-			L<-Sol.hat[2]
-			R<-Sol.hat[3]
-			#print(c(i,T))
-			if (y0>foo.x(T)){
-					run<-Slice_Run(T,foo.x,foo.y,hist.y,data.T)
-					T<-run[1]
-					L<-run[2]
-					R<-run[3]
-					y0<-run[4]
+		foo_x<-mcInit[[j]]$foo_x
+		foo_y<-mcInit[[j]]$foo_y
+		hist_y<-mcInit[[j]]$hist_y
+		if (y0>foo_x(T)){
+			Sol.hat<-Shrink(foo_x,T,y0,L,R) #shrinkage
+			T<-Sol.hat[[1]]
+			L<-Sol.hat[[2]]
+			R<-Sol.hat[[3]]
+
+			if (y0>foo_x(T)){
+					run<-Slice_Run(T,foo_x,foo_y,hist_y)
+					T<-run[[1]]
+					L<-run[[2]]
+					R<-run[[3]]
+					y0<-run[[4]]
 					}
 		}
 	}
 #Slice's end
-
+#print(T)
 m<-which(data.T[,1]<round(T)+0.1&data.T[,1]>round(T)-0.1)
 
 sum_xy <- sum((Dose)*(data.y[m,data.x]))
