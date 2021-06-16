@@ -49,7 +49,7 @@ Slice3(
 }
 \value{
 an (r × 5)-matrix,
-x0 'True' dose value
+De 'True' dose value
 sigma2 variance
 alpha intercept
 beta slope
@@ -60,6 +60,24 @@ MC Analysis TL (slice +gibbs) following gibbs3.R Hickey (2006)
 }
 \details{
 additional scalar variable T (Slice sampler)
+}
+\examples{
+##load data
+if(dev.cur()!=1) dev.off()
+data(multiTL, envir = environment())
+mu_0= -105
+var_0=50
+mu_alpha=6.3e-3
+var_alpha=9e-8
+mu_beta=5e5
+var_beta=2e-12
+y0=0
+a=6.8274
+b=1.3819
+attach(multiTL)
+test<-Slice3(Dose,df.T,df.y,mu_0,var_0,mu_alpha,var_alpha, mu_beta, var_beta,y0,a,b,n.iter)
+detach(multiTL)
+
 }
 \references{
 Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.

@@ -20,7 +20,7 @@ involving sigma}
 }
 \value{
 an (r × 5)-matrix,
-x0 'True' dose value
+De 'True' dose value
 sigma2 variance
 alpha intercept
 beta slope
@@ -30,6 +30,16 @@ T Temperature
 MC Analysis TL (slice +gibbs) following gibbs4.R Hickey (2006)
 Bayesian approach without expert judgement
 additional scalar variable T (Slice sampler)
+}
+\examples{
+##load data
+if(dev.cur()!=1) dev.off()
+data(multiTL, envir = environment())
+attach(multiTL)
+test<-Slice4(Dose,df.T,df.y,k=1,n.iter)
+detach(multiTL)
+
+
 }
 \references{
 Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.

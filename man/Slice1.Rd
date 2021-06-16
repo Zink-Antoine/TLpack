@@ -27,7 +27,7 @@ Slice1(Dose, df.T, df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter)
 }
 \value{
 an (n.iter x 3)-matrix
-x0 'True' dose value
+De 'True' dose value
 b slope
 T Temperature
 }
@@ -38,10 +38,13 @@ additional scalar variable T (Slice sampler)
 }
 \examples{
 ##load data
+if(dev.cur()!=1) dev.off()
 data(multiTL, envir = environment())
 attach(multiTL)
 Slice1(Dose,df.T,df.y,mu_b,mu_0,var_b,var_0,var_y,n.iter)
 detach(multiTL)
+
+
 }
 \references{
 Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.

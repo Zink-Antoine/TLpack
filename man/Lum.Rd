@@ -25,7 +25,7 @@ Lum(
 
 \item{Dosea0}{\link{numeric} (\strong{with default})  the reference of alpha irradiation (in seconds)}
 
-\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected}
+\item{alpha}{\link{logical} (\strong{with default}) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected and returned}
 
 \item{supra}{\link{logical} (\strong{with default}) TRUE if supra measurements are included. Based on the number of data files, the value is corrected}
 
@@ -36,9 +36,9 @@ Lum(
 \value{
 a list object
 
-$alpha
+$alpha TRUE if alpha measurements are included.
 
-$supra
+$supra TRUE if supra measurements are included.
 
 $b
 glowcurve corrected from background for beta irradiation
