@@ -19,7 +19,7 @@
 #' @import stats
 #'
 #' @return an (n.iter x 3)-matrix
-#' x0 'True' dose value
+#' De 'True' dose value
 #' b slope
 #' T Temperature
 #'
@@ -31,52 +31,48 @@
 #'
 #' @examples
 #' ##load data
+#' if(dev.cur()!=1) dev.off()
 #' data(multiTL, envir = environment())
 #' attach(multiTL)
 #' Slice1(Dose,df.T,df.y,mu_b,mu_0,var_b,var_0,var_y,n.iter)
 #' detach(multiTL)
+#'
+#'
 Slice1<-
 function (Dose,df.T,df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter) {
 
-mat <- matrix(ncol=3, nrow=n.iter)
-x0 <- 1
-b <- 1
-T<-300
-
-mat[1, ] <- c(x0, b, T)
 data.x<-seq(1,length(Dose))
 data.T <- df.T
 data.y<-df.y
+Rmx<-max(data.T)
+Lmin<-min(data.T)
 
 mcInit<-list()
 for (j in 1:ncol(data.y)){
 	mcInit[[j]]<-Slice_Init(data.T[,j],data.y[,j])
 }
 
+mat <- matrix(ncol=3, nrow=n.iter)
+De <- 1
+b <- 1
+T<-mcInit[[1]]$x0
+mat[1, ] <- c(De, b, T)
+
+
 for (i in 2:n.iter) {
 #Temperature calculation using Slice sampler
-	run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y)
+	run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
 	T<-run[[1]]
 	L<<-run[[2]]
 	R<<-run[[3]]
-	y0<<-run[[4]]
+	y0<-run[[4]]
 	for (j in 2:ncol(data.y)){
 		foo_x<-mcInit[[j]]$foo_x
-		foo_y<-mcInit[[j]]$foo_y
-		hist_y<-mcInit[[j]]$hist_y
 		if (y0>foo_x(T)){
-			Sol.hat<-Shrink(foo_x,T,y0,L,R) #shrinkage
+			Sol.hat<-Shrink(foo_x,T,y0,L,R,Rmx=Rmx[[j]],Lmin=Lmin[[j]]) #shrinkage
 			T<-Sol.hat[[1]]
 			L<-Sol.hat[[2]]
 			R<-Sol.hat[[3]]
-
-			if (y0>foo_x(T)){
-					run<-Slice_Run(T,foo_x,foo_y,hist_y)
-					T<-run[[1]]
-					L<-run[[2]]
-					R<-run[[3]]
-					y0<-run[[4]]
-					}
 		}
 	}
 #Slice's end
@@ -84,14 +80,14 @@ for (i in 2:n.iter) {
 m<-which(data.T[,1]<round(T)+0.1&data.T[,1]>round(T)-0.1)
 
 sum_xy <- sum((Dose)*(data.y[m,data.x]))
-sum_xx <- sum((Dose)^2) + x0^2
+sum_xx <- sum((Dose)^2) + De^2
 mean1 <- (mu_0/var_0)/((b*b/var_y)+(1/var_0))
 var1 <- 1/((b*b/var_y)+(1/var_0))
 mean2 <- ((sum_xy/var_y)+(mu_b/var_b))/((sum_xx/var_y)+(1/var_b))
 var2 <- 1/((sum_xx/var_y)+(1/var_b))
-x0 <- rnorm(1, mean1, sqrt(var1))
+De <- rnorm(1, mean1, sqrt(var1))
 b <- rnorm(1, mean2, sqrt(var2))
-mat[i, ] <- c(x0, b,T)
+mat[i, ] <- c(De, b,T)
 }
 mat
 }

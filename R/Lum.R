@@ -3,12 +3,12 @@
 #'
 #' @inheritParams TL.plot
 #'
-#' @param alpha [logical] (**with default**) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected
+#' @param alpha [logical] (**with default**) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected and returned
 #' @param TypLum [character],[list] (**with default**) luminescence type "TL" = signal; "BG" = background
 #'
 #' @return a list object
-#' @return $alpha
-#' @return $supra
+#' @return $alpha TRUE if alpha measurements are included.
+#' @return $supra TRUE if supra measurements are included.
 #' @return $b
 #' glowcurve corrected from background for beta irradiation
 #' @return $a
