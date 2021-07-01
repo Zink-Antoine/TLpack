@@ -1,6 +1,8 @@
 ##
 #' Slice5
 #'
+#' MC Analysis TL (slice +gibbs) from linear regression
+#'
 #'
 #'
 #' @inheritParams Slice1
@@ -22,52 +24,53 @@
 #'
 #' @export
 #'
+#' @examples
+#' ##load data
+#' if(dev.cur()!=1) dev.off()
+#' data(multiTL, envir = environment())
+#' attach(multiTL)
+#' test<-Slice5(Dose,df.T,df.y,n.iter)
+#' detach(multiTL)
+#'
 Slice5<-
 function (Dose,df.T,df.y, n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10)) {
 
+mcInit<-list()
+for (j in 1:ncol(df.y)){
+    mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
+}
+
 mat <- matrix(ncol=4, nrow=n.iter)
-T<-300
+
 alpha<- 1
 beta<- 1
 sigma2<- 1
-
+T<-mcInit[[1]]$x0
 mat[1, ] <- c(alpha,beta,sigma2, T)
 Err<-function(y){var(y)*(length(y)-1)}
 x.factor<-factor(Dose)
 n<-length(Dose)
 n.y<-seq(1,n)
-
-mcInit<-list()
-for (j in 1:ncol(df.y)){
-	mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
-}
+Rmx<-max(df.T)
+Lmin<-min(df.T)
 
 for (i in 2:n.iter) {
-  #Temperature calculation using Slice sample
-	run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y)
-	T<-run[[1]]
-	L<-run[[2]]
-	R<-run[[3]]
-	y0<-run[[4]]
-	for (j in 2:ncol(df.y)){
-		foo_x<-mcInit[[j]]$foo_x
-		foo_y<-mcInit[[j]]$foo_y
-		hist_y<-mcInit[[j]]$hist_y
-		if (y0>foo_x(T)){
-			Sol.hat<-Shrink(foo_x,T,y0,L,R) #shrinkage
-			T<-Sol.hat[[1]]
-			L<-Sol.hat[[2]]
-			R<-Sol.hat[[3]]
-			if (y0>foo_x(T)){
-					run<-Slice_Run(T,foo_x,foo_y,hist_y)
-					T<-run[[1]]
-					L<-run[[2]]
-					R<-run[[3]]
-					y0<-run[[4]]
-					}
-		}
-	}
-#slice's end
+  #Temperature calculation using Slice sampler
+  run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
+  T<-run[[1]]
+  L<-run[[2]]
+  R<-run[[3]]
+  y0<-run[[4]]
+  for (j in 2:ncol(df.y)){
+    foo_x<-mcInit[[j]]$foo_x
+    if (y0>foo_x(T)){
+      Sol.hat<-Shrink(foo_x,T,y0,L,R,R,Rmx=Rmx[[j]],Lmin=Lmin[[j]]) #shrinkage
+      T<-Sol.hat[[1]]
+      L<-Sol.hat[[2]]
+      R<-Sol.hat[[3]]
+    }
+  }
+  #slice's end
 
 m<-which(df.T[,1]<round(T)+0.1&df.T[,1]>round(T)-0.1)
 if (inv) {

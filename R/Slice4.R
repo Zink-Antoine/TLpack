@@ -36,13 +36,6 @@
 #'
 Slice4<-
 function (Dose,df.T,df.y, k=1, n.iter) {
-#nouvelle inconnue T scalaire
-
-n<-length(Dose)
-df.x<-Dose
-n.x<-seq(1,n)
-Rmx<-max(df.T)
-Lmin<-min(df.T)
 
 mcInit<-list()
 for (j in 1:ncol(df.y)){
@@ -56,6 +49,12 @@ alpha<- 1
 beta<- 1
 T<-mcInit[[1]]$x0
 mat[1, ] <- c(De, sigma2,alpha,beta, T)
+
+n<-length(Dose)
+df.x<-Dose
+n.x<-seq(1,n)
+Rmx<-max(df.T)
+Lmin<-min(df.T)
 
 for (i in 2:n.iter) {
 #Temperature calculation using Slice sampler
