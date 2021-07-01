@@ -40,5 +40,14 @@ sigma2 variance
 T Temperature
 }
 \description{
-Slice5
+MC Analysis TL (slice +gibbs) from linear regression
+}
+\examples{
+##load data
+if(dev.cur()!=1) dev.off()
+data(multiTL, envir = environment())
+attach(multiTL)
+test<-Slice5(Dose,df.T,df.y,n.iter)
+detach(multiTL)
+
 }
