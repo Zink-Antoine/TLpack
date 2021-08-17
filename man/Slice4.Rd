@@ -35,9 +35,11 @@ additional scalar variable T (Slice sampler)
 ##load data
 if(dev.cur()!=1) dev.off()
 data(multiTL, envir = environment())
-attach(multiTL)
+Dose<-multiTL$Dose
+df.T<-multiTL$df.T
+df.y<-multiTL$df.y
+n.iter<-multiTL$n.iter
 test<-Slice4(Dose,df.T,df.y,k=1,n.iter)
-detach(multiTL)
 
 
 }
