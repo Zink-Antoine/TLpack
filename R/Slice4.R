@@ -29,9 +29,11 @@
 #' ##load data
 #' if(dev.cur()!=1) dev.off()
 #' data(multiTL, envir = environment())
-#' attach(multiTL)
+#' Dose<-multiTL$Dose
+#' df.T<-multiTL$df.T
+#' df.y<-multiTL$df.y
+#' n.iter<-multiTL$n.iter
 #' test<-Slice4(Dose,df.T,df.y,k=1,n.iter)
-#' detach(multiTL)
 #'
 #'
 Slice4<-
@@ -53,8 +55,8 @@ mat[1, ] <- c(De, sigma2,alpha,beta, T)
 n<-length(Dose)
 df.x<-Dose
 n.x<-seq(1,n)
-Rmx<-max(df.T)
-Lmin<-min(df.T)
+Rmx<-apply(df.T,2,max)
+Lmin<-apply(df.T,2,min)
 
 for (i in 2:n.iter) {
 #Temperature calculation using Slice sampler

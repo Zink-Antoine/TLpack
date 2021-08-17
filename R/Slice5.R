@@ -28,9 +28,20 @@
 #' ##load data
 #' if(dev.cur()!=1) dev.off()
 #' data(multiTL, envir = environment())
-#' attach(multiTL)
+#' Dose<-multiTL$Dose
+#' df.T<-multiTL$df.T
+#' df.y<-multiTL$df.y
+#' n.iter<-multiTL$n.iter
 #' test<-Slice5(Dose,df.T,df.y,n.iter)
-#' detach(multiTL)
+#' #
+#' if(dev.cur()!=1) dev.off()
+#' data(TLpan, envir = environment())
+#' Dose<-c(0,0,80,80,80,160,160,160)
+#' df.T<-matrix(rep(seq(26,500),8),475,8)
+#' df.y<-TL.Pan[,1:8]
+#' n.iter<-100
+#' Pan<-Slice5(Dose,df.T,df.y,n.iter,inv=TRUE)
+#'
 #'
 Slice5<-
 function (Dose,df.T,df.y, n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10)) {
@@ -51,8 +62,8 @@ Err<-function(y){var(y)*(length(y)-1)}
 x.factor<-factor(Dose)
 n<-length(Dose)
 n.y<-seq(1,n)
-Rmx<-max(df.T)
-Lmin<-min(df.T)
+Rmx<-apply(df.T,2,max)
+Lmin<-apply(df.T,2,min)
 
 for (i in 2:n.iter) {
   #Temperature calculation using Slice sampler
@@ -82,6 +93,9 @@ else{
 	Y<-df.y[m,n.y]
 }
 
+e2<-apply(df.y[seq(m-1,m+1),],2,var)
+e2<-tapply(e2,x.factor,mean)
+
 Sxx<-sum((X-mean(X))^2)
 Sxy<-sum((X-mean(X))*(Y-mean(Y)))
 beta<-rnorm(1,mean=(Sxy/Sxx),sd=sqrt(sigma2/Sxx))
@@ -90,14 +104,16 @@ S1<-mean(Y)-(Sxy/Sxx)*mean(X)
 S2<-(1/n+mean(X)^2/Sxx)
 alpha<-rnorm(1,mean=S1,sd=sqrt(sigma2*S2))
 
-SSE<-sum(tapply(df.y[m,n.y],x.factor,Err))
+SE<-tapply(df.y[m,n.y],x.factor,Err)
+SE[is.na(SE)]=e2[is.na(SE)]
+SSE<-sum(SE)
 tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
 sigma2<-1/tau
 
 mat[i,]<-c(alpha,beta,sigma2,T)
 }
 colnames(mat)<-c("intercept","x","sigma2","Temperature")
-mat<-mat[seq(n.burnin,n.iter,n.thin),]
-as.mcmc(mat)
+mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
+mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
 }
 
