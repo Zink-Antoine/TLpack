@@ -27,9 +27,12 @@ Slice1(Dose, df.T, df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter)
 }
 \value{
 an (n.iter x 3)-matrix
-De 'True' dose value
-b slope
-T Temperature
+\tabular{lll}{
+\strong{column} \tab \strong{Type} \tab \strong{Description}\cr
+\code{De} \tab \code{numeric} \tab 'True' Dose value \cr
+\code{b} \tab \code{numeric} \tab slope \cr
+\code{T} \tab \code{numeric} \tab Temperature \cr
+}
 }
 \description{
 MC Analysis TL (slice +gibbs) following gibbs1.R Hickey (2006)

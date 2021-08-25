@@ -34,10 +34,13 @@ Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there a
 }
 \value{
 an (r × 4)-matrix,
-alpha intercept
-beta slope
-sigma2 variance
-T Temperature
+\tabular{lll}{
+\strong{column} \tab \strong{Type} \tab \strong{Description}\cr
+\code{alpha} \tab  \code{numeric} \tab intercept\cr
+\code{beta} \tab \code{numeric} \tab slope \cr
+\code{sigma2} \tab  \code{numeric} \tab variance\cr
+\code{T} \tab \code{numeric} \tab Temperature \cr
+}
 }
 \description{
 MC Analysis TL (slice +gibbs) from linear regression

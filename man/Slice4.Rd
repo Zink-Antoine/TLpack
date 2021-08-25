@@ -20,11 +20,14 @@ involving sigma}
 }
 \value{
 an (r × 5)-matrix,
-De 'True' dose value
-sigma2 variance
-alpha intercept
-beta slope
-T Temperature
+\tabular{lll}{
+\strong{column} \tab \strong{Type} \tab \strong{Description}\cr
+\code{De} \tab \code{numeric} \tab 'True' Dose value \cr
+\code{sigma2} \tab  \code{numeric} \tab variance\cr
+\code{alpha} \tab  \code{numeric} \tab intercept\cr
+\code{beta} \tab \code{numeric} \tab slope \cr
+\code{T} \tab \code{numeric} \tab Temperature \cr
+}
 }
 \description{
 MC Analysis TL (slice +gibbs) following gibbs4.R Hickey (2006)
