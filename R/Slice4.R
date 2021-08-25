@@ -12,11 +12,14 @@
 #' @import Slice
 #'
 #' @return an (r × 5)-matrix,
-#' De 'True' dose value
-#' sigma2 variance
-#' alpha intercept
-#' beta slope
-#' T Temperature
+#'  \tabular{lll}{
+#'  **column** \tab **Type** \tab **Description**\cr
+#'  `De` \tab `numeric` \tab 'True' Dose value \cr
+#'  `sigma2` \tab  `numeric` \tab variance\cr
+#'  `alpha` \tab  `numeric` \tab intercept\cr
+#'  `beta` \tab `numeric` \tab slope \cr
+#'  `T` \tab `numeric` \tab Temperature \cr
+#' }
 #'
 #' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
 #' @references chapter 6.3.6 and Appendix G.7

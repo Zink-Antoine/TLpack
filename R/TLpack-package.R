@@ -40,3 +40,20 @@ NULL
 #'
 
 NULL
+
+
+#' TL data of a gouge
+#'
+#' An example of actual data from a TL measurement
+#'
+#' This data set gives the TL growth curves for gouge
+#'
+#' @docType data
+#' @keywords datasets
+#' @name TL.Gouge
+#' @usage data(TLgouge)
+#' @format A matrix 475 x 8 measurement points.
+#' @source 2305181.binx TL grain fin gouge à douille
+#'
+
+NULL

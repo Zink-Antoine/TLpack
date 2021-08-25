@@ -47,7 +47,7 @@ function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"
 		else supra<-FALSE
 		}
 
-	B1<-array(unlist(D1$Brut),dim=c(D1$T,D1$L))#pur matrix to calculate
+	B1<-array(unlist(D1$Brut),dim=c(D1$T,D1$L))#pure matrix to calculate
 	Net1<-B1[,D1$TL]-B1[,D1$BG]
 	Net1[Net1<0]<-0
 

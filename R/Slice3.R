@@ -16,11 +16,14 @@
 #' @import Slice
 #'
 #' @return an (r × 5)-matrix,
-#' De 'True' dose value
-#' sigma2 variance
-#' alpha intercept
-#' beta slope
-#' T Temperature
+#' #'  \tabular{lll}{
+#'  **column** \tab **Type** \tab **Description**\cr
+#'  `De` \tab `numeric` \tab 'True' Dose value \cr
+#'  `sigma2` \tab  `numeric` \tab variance\cr
+#'  `alpha` \tab  `numeric` \tab intercept\cr
+#'  `beta` \tab `numeric` \tab slope \cr
+#'  `T` \tab `numeric` \tab Temperature \cr
+#' }
 #'
 #' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
 #' @references chapter 5 and Appendix G.6
@@ -51,8 +54,8 @@ function (Dose,df.T,df.y, mu_0, var_0, mu_alpha, var_alpha, mu_beta, var_beta, y
 n<-length(Dose)
 df.x<-Dose
 n.x<-seq(1,n)
-Rmx<-max(df.T)
-Lmin<-min(df.T)
+Rmx<-apply(df.T,2,max)
+Lmin<-apply(df.T,2,min)
 
 mcInit<-list()
 for (j in 1:ncol(df.y)){

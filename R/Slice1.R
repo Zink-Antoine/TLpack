@@ -19,9 +19,13 @@
 #' @import stats
 #'
 #' @return an (n.iter x 3)-matrix
-#' De 'True' dose value
-#' b slope
-#' T Temperature
+#'  \tabular{lll}{
+#'  **column** \tab **Type** \tab **Description**\cr
+#'  `De` \tab `numeric` \tab 'True' Dose value \cr
+#'  `b` \tab `numeric` \tab slope \cr
+#'  `T` \tab `numeric` \tab Temperature \cr
+#' }
+#
 #'
 #' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
 #' @references chapter 3 and Appendix G.1
@@ -44,8 +48,8 @@ function (Dose,df.T,df.y, mu_b, mu_0, var_b, var_0, var_y, n.iter) {
 data.x<-seq(1,length(Dose))
 data.T <- df.T
 data.y<-df.y
-Rmx<-max(data.T)
-Lmin<-min(data.T)
+Rmx<-apply(data.T,2,max)
+Lmin<-apply(data.T,2,min)
 
 mcInit<-list()
 for (j in 1:ncol(data.y)){
