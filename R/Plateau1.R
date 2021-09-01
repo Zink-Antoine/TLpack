@@ -16,13 +16,15 @@
 #' @import Slice
 #' @import coda
 #'
-#' @return an (r × 4)-matrix,
+#' @return an (r × 6)-matrix,
 #' \tabular{lll}{
 #'  **column** \tab **Type** \tab **Description**\cr
 #'  `alpha` \tab  `numeric` \tab intercept\cr
 #'  `beta` \tab `numeric` \tab slope \cr
 #'  `sigma2` \tab  `numeric` \tab variance\cr
-#'  `T` \tab `numeric` \tab Temperature range \cr
+#'  `T1` \tab `numeric` \tab lower limit of the temperature range \cr
+#'  `T2` \tab `numeric` \tab upper limit of the temperature range \cr
+#'  `De` \tab `numeric` \tab 'True' Dose value \cr
 #' }
 #'
 #' @export
@@ -35,15 +37,14 @@
 #' df.T<-multiTL$df.T
 #' df.y<-multiTL$df.y
 #' n.iter<-multiTL$n.iter
-#' test<-Plateau5(Dose,df.T,df.y,n.iter)
+#' test<-Plateau5(Dose,df.T,df.y,Ti=50,Tf=400,n.iter=n.iter)
 #' #
 #' if(dev.cur()!=1) dev.off()
 #' data(TLpan, envir = environment())
 #' Dose<-c(0,0,80,80,80,160,160,160)
 #' df.T<-matrix(rep(seq(26,500),8),475,8)
 #' df.y<-TL.Pan[,1:8]
-#' n.iter<-100
-#' Pan<-Plateau5(Dose,df.T,df.y,n.iter,inv=TRUE)
+#' Pan<-Plateau5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
 #'
 #'
 Plateau5<-
@@ -59,18 +60,18 @@ Plateau5<-
     if(Tf>Rmx[[1]]) return (print("Tf out of range"))
 
     #variables: initial values
-    mat <- matrix(ncol=5, nrow=n.iter)
+    mat <- matrix(ncol=6, nrow=n.iter)
 
     alpha<- 1
     beta<- 1
     sigma2<- 1
-    T<-c(Ti,Tf)
-    mat[1, ] <- c(alpha,beta,sigma2, T)
+    xn<-0
+    mat[1, ] <- c(alpha,beta,sigma2, Ti,Tf,xn)
 
     for (i in 2:n.iter) {
 
       #Temperature range calculation
-      T2<-round(runif(1,Ti,Tf))
+      T2<-round(runif(1,mat[i-1,4],Tf))
       T1<-round(runif(1,Ti,T2))
       if (T1==T2) {T1<-T1-1}
 
@@ -90,7 +91,7 @@ Plateau5<-
       Sxy<-sum((X-mean(X))*(Y-mean(Y)))
       beta<-rnorm(1,mean=(Sxy/Sxx),sd=sqrt(sigma2/Sxx))
 
-      S1<-mean(Y)-(Sxy/Sxx)*mean(X)
+      S1<-mean(Y)-beta*mean(X)
       S2<-(1/n+mean(X)^2/Sxx)
       alpha<-rnorm(1,mean=S1,sd=sqrt(sigma2*S2))
 
@@ -98,11 +99,12 @@ Plateau5<-
       SSE<-sum(SE)
       tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
       sigma2<-1/tau
-      T<-c(T1,T2)
 
-      mat[i,]<-c(alpha,beta,sigma2,T)
+      De<-rnorm(1,-alpha/beta,sqrt(sigma2))
+
+      mat[i,]<-c(alpha,beta,sigma2,T1,T2,De)
     }
-    colnames(mat)<-c("intercept","x","sigma2","Temperature1","Temperature2")
+    colnames(mat)<-c("intercept","x","sigma2","Temperature1","Temperature2","natural dose")
     mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
     mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
   }

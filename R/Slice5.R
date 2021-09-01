@@ -18,13 +18,14 @@
 #' @import Slice
 #' @import coda
 #'
-#' @return an (r × 4)-matrix,
+#' @return an (r × 5)-matrix,
 #' \tabular{lll}{
 #'  **column** \tab **Type** \tab **Description**\cr
 #'  `alpha` \tab  `numeric` \tab intercept\cr
 #'  `beta` \tab `numeric` \tab slope \cr
 #'  `sigma2` \tab  `numeric` \tab variance\cr
 #'  `T` \tab `numeric` \tab Temperature \cr
+#'  `De` \tab `numeric` \tab 'True' Dose value \cr
 #' }
 #'
 #' @export
@@ -64,7 +65,7 @@ Rmx<-apply(df.T,2,max)
 Lmin<-apply(df.T,2,min)
 
 #variables: initial values
-mat <- matrix(ncol=4, nrow=n.iter)
+mat <- matrix(ncol=5, nrow=n.iter)
 mcInit<-list()
 for (j in 1:ncol(df.y)){
   repeat{
@@ -79,7 +80,8 @@ alpha<- 1
 beta<- 1
 sigma2<- 1
 T<-mcInit[[1]]$x0
-mat[1, ] <- c(alpha,beta,sigma2, T)
+xn<-0
+mat[1, ] <- c(alpha,beta,sigma2, T,xn)
 
 for (i in 2:n.iter) {
 
@@ -120,7 +122,7 @@ for (i in 2:n.iter) {
   Sxy<-sum((X-mean(X))*(Y-mean(Y)))
   beta<-rnorm(1,mean=(Sxy/Sxx),sd=sqrt(sigma2/Sxx))
 
-  S1<-mean(Y)-(Sxy/Sxx)*mean(X)
+  S1<-mean(Y)-beta*mean(X)
   S2<-(1/n+mean(X)^2/Sxx)
   alpha<-rnorm(1,mean=S1,sd=sqrt(sigma2*S2))
 
@@ -133,9 +135,11 @@ for (i in 2:n.iter) {
   tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
   sigma2<-1/tau
 
-  mat[i,]<-c(alpha,beta,sigma2,round(T))
+  De<-rnorm(1,-alpha/beta,sqrt(sigma2))
+
+  mat[i,]<-c(alpha,beta,sigma2,round(T),De)
 }
-colnames(mat)<-c("intercept","x","sigma2","Temperature")
+colnames(mat)<-c("intercept","x","sigma2","Temperature","natural dose")
 mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
 mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
 }
