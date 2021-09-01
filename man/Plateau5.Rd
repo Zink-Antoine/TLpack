@@ -39,13 +39,15 @@ Default is n.iter/2, that is, discarding the first half of the simulations.}
 Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there are at least 20 simulations.}
 }
 \value{
-an (r × 4)-matrix,
+an (r × 6)-matrix,
 \tabular{lll}{
 \strong{column} \tab \strong{Type} \tab \strong{Description}\cr
 \code{alpha} \tab  \code{numeric} \tab intercept\cr
 \code{beta} \tab \code{numeric} \tab slope \cr
 \code{sigma2} \tab  \code{numeric} \tab variance\cr
-\code{T} \tab \code{numeric} \tab Temperature range \cr
+\code{T1} \tab \code{numeric} \tab lower limit of the temperature range \cr
+\code{T2} \tab \code{numeric} \tab upper limit of the temperature range \cr
+\code{De} \tab \code{numeric} \tab 'True' Dose value \cr
 }
 }
 \description{
@@ -59,15 +61,14 @@ Dose<-multiTL$Dose
 df.T<-multiTL$df.T
 df.y<-multiTL$df.y
 n.iter<-multiTL$n.iter
-test<-Plateau5(Dose,df.T,df.y,n.iter)
+test<-Plateau5(Dose,df.T,df.y,Ti=50,Tf=400,n.iter=n.iter)
 #
 if(dev.cur()!=1) dev.off()
 data(TLpan, envir = environment())
 Dose<-c(0,0,80,80,80,160,160,160)
 df.T<-matrix(rep(seq(26,500),8),475,8)
 df.y<-TL.Pan[,1:8]
-n.iter<-100
-Pan<-Plateau5(Dose,df.T,df.y,n.iter,inv=TRUE)
+Pan<-Plateau5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
 
 
 }

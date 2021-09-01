@@ -37,13 +37,14 @@ Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there a
 Default is the minimum measured value.}
 }
 \value{
-an (r × 4)-matrix,
+an (r × 5)-matrix,
 \tabular{lll}{
 \strong{column} \tab \strong{Type} \tab \strong{Description}\cr
 \code{alpha} \tab  \code{numeric} \tab intercept\cr
 \code{beta} \tab \code{numeric} \tab slope \cr
 \code{sigma2} \tab  \code{numeric} \tab variance\cr
 \code{T} \tab \code{numeric} \tab Temperature \cr
+\code{De} \tab \code{numeric} \tab 'True' Dose value \cr
 }
 }
 \description{
