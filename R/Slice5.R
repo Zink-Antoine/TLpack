@@ -12,6 +12,8 @@
 #'  Default is n.iter/2, that is, discarding the first half of the simulations.
 #' @param n.thin [numeric] (**with default**) thinning rate. Must be a positive integer. Set n.thin > 1 to save memory and computation time if n.iter is large.
 #' Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there are at least 20 simulations.
+#' @param threshold [numeric] (**with default**) measured point below or equal to the threshold are rejected.
+#' Default is the minimum measured value.
 #'
 #' @import Slice
 #' @import coda
@@ -47,14 +49,16 @@
 #'
 #'
 Slice5<-
-function (Dose,df.T,df.y, n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10)) {
+function (Dose,df.T,df.y,
+            n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10),
+              threshold=min(df.y[df.y>0])) {
 
 #internal function
 #Err<-function(y){var(y)*(length(y)-1)}
 
 #parameters
 #x.factor<-factor(Dose)
-n<-length(Dose)
+  n<-length(Dose)
 n.y<-seq(1,n)
 Rmx<-apply(df.T,2,max)
 Lmin<-apply(df.T,2,min)
@@ -63,7 +67,12 @@ Lmin<-apply(df.T,2,min)
 mat <- matrix(ncol=4, nrow=n.iter)
 mcInit<-list()
 for (j in 1:ncol(df.y)){
+  repeat{
     mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
+    Tj<-mcInit[[j]]$x0
+    foo_x<-mcInit[[j]]$foo_x
+    if (foo_x(Tj)>threshold) break
+  }
 }
 
 alpha<- 1
@@ -72,11 +81,15 @@ sigma2<- 1
 T<-mcInit[[1]]$x0
 mat[1, ] <- c(alpha,beta,sigma2, T)
 
-
 for (i in 2:n.iter) {
 
   #Temperature calculation using Slice sampler
-  run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
+  repeat{
+    run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
+    print(i)
+    if (mcInit[[1]]$foo_x(run[[1]])>threshold) break
+
+  }
   T<-run[[1]]
   L<-run[[2]]
   R<-run[[3]]
@@ -89,10 +102,11 @@ for (i in 2:n.iter) {
       L<-Sol.hat[[2]]
       R<-Sol.hat[[3]]
     }
+    print(j)
   }
   #slice's end
 
-  m<-which(df.T[,1]<round(T)+0.1&df.T[,1]>round(T)-0.1)
+  m<-which(df.T[,1]==round(T))
   if (inv) {
 	  Y<-Dose
 	  X<-df.y[m,n.y]
@@ -119,7 +133,7 @@ for (i in 2:n.iter) {
   tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
   sigma2<-1/tau
 
-  mat[i,]<-c(alpha,beta,sigma2,T)
+  mat[i,]<-c(alpha,beta,sigma2,round(T))
 }
 colnames(mat)<-c("intercept","x","sigma2","Temperature")
 mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
