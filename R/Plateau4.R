@@ -1,11 +1,13 @@
-#' Slice4
+#' Plateau4
 #'
-#' MC Analysis TL (slice +gibbs) following gibbs4.R Hickey (2006)
+#' MC Analysis TL (Plateau +gibbs) following gibbs4.R Hickey (2006)
 #' Bayesian approach without expert judgement
-#' additional scalar variable T (Slice sampler)
+#' additional scalar variable T (Plateau sampler)
 #'
 #'
 #' @inheritParams Slice1
+#' @param Ti [numeric] (**with default**) temperature minimum for the plateau
+#' @param Tf [numeric] (**with default**) temperature maximum for the plateau
 #' @param k [numeric] (**required**) the number of parameters in the group
 #' involving sigma
 #' @param yn [numeric] (**with default**) intensity value of the 'true' (natural) Dose (in extrapolation, yn = 0)
@@ -14,7 +16,6 @@
 #' @param n.thin [numeric] (**with default**) thinning rate. Must be a positive integer. Set n.thin > 1 to save memory and computation time if n.iter is large.
 #' Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there are at least 20 simulations.
 #'
-#' @import Slice
 #'
 #' @return an (r × 5)-matrix (mcmc class),
 #'  \tabular{lll}{
@@ -28,7 +29,6 @@
 #'
 #' @references Gibbs sampler: Hickey, G. L. 2006. « The Linear Calibration Problem: A Bayesian Analysis ». PhD Thesis, PhD dissertation, University of Durham. 1–148. http://www.dur.ac.uk/g.l.hickey/dissertation.pdf.
 #' @references chapter 6.3.6 and Appendix G.7
-#' @references Slice sampler: Neal, R. 2003. « Slice Sampling ». Annals of Statistics 31 (3): 705‑67.
 #'
 #'
 #' @export
@@ -41,49 +41,31 @@
 #' df.T<-multiTL$df.T
 #' df.y<-multiTL$df.y
 #' n.iter<-multiTL$n.iter
-#' test<-Slice4(Dose,df.T,df.y,k=1,n.iter=n.iter)
+#' test<-Plateau4(Dose,df.T,df.y,k=1,n.iter=n.iter)
 #'
 #'
-Slice4<-
-function (Dose,df.T,df.y, k=1,yn=0,
+Plateau4<-
+function (Dose,df.T,df.y, Ti=200,Tf=500, k=1,yn=0,
           n.iter,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10)) {
 
-mcInit<-list()
-for (j in 1:ncol(df.y)){
-	mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
-}
-
-mat <- matrix(ncol=5, nrow=n.iter)
-De<- 1
-sigma2<- 1
-alpha<- 1
-beta<- 1
-T<-mcInit[[1]]$x0
-mat[1, ] <- c(alpha,beta,sigma2,T,De)
-
+mat <- matrix(ncol=6, nrow=n.iter)
 n<-length(Dose)
 df.x<-Dose
 n.x<-seq(1,n)
-Rmx<-apply(df.T,2,max)
-Lmin<-apply(df.T,2,min)
+
+alpha<- 1
+beta<- 1
+sigma2<- 1
+De<-0
+mat[1, ] <- c(alpha,beta,sigma2, Ti,Tf,De)
 
 for (i in 2:n.iter) {
-#Temperature calculation using Slice sampler
-  run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
-	T<-run[[1]]
-	L<-run[[2]]
-	R<-run[[3]]
-	y0<-run[[4]]
-	for (j in 2:ncol(df.y)){
-		foo_x<-mcInit[[j]]$foo_x
-		if (y0>foo_x(T)){
-			Sol.hat<-Shrink(foo_x,T,y0,L,R,R,Rmx=Rmx[[j]],Lmin=Lmin[[j]]) #shrinkage
-			T<-Sol.hat[[1]]
-			L<-Sol.hat[[2]]
-			R<-Sol.hat[[3]]
-		}
-	}
-#slice's end
+  #Temperature range calculation
+  T2<-round(runif(1,mat[i-1,4],Tf))
+  T1<-round(runif(1,Ti,T2))
+  if (T1==T2) {T1<-T1-1}
+
+  #sampling's end
 
 m<-which(df.T[,1]<round(T)+0.1&df.T[,1]>round(T)-0.1)
 
@@ -102,10 +84,10 @@ mu1<-((2*sigma2*n*t*(mean(df.x)))+(beta*(yn-alpha)))/(2*sigma2*n*t+beta^2)
 var1<-sigma2/(2*sigma2*n*t+beta^2)
 De<-rnorm(1,mu1,sqrt(var1))
 
-mat[i,]<-c(alpha,beta,sigma2,T,De)
+mat[i,]<-c(alpha,beta,sigma2,T1,T2,De)
 
 }
-colnames(mat)<-c("intercept","x","sigma2","Temperature","natural dose")
+colnames(mat)<-c("intercept","x","sigma2","Temperature1","Temperature2","natural dose")
 mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
 mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
 }

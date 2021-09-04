@@ -65,8 +65,8 @@ Plateau5<-
     alpha<- 1
     beta<- 1
     sigma2<- 1
-    xn<-0
-    mat[1, ] <- c(alpha,beta,sigma2, Ti,Tf,xn)
+    De<-0
+    mat[1, ] <- c(alpha,beta,sigma2, Ti,Tf,De)
 
     for (i in 2:n.iter) {
 
