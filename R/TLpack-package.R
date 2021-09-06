@@ -34,7 +34,7 @@ NULL
 #' @docType data
 #' @keywords datasets
 #' @name TL.sup.Pan
-#' @usage data(TLsupPan)
+#' @usage data(TLsuppan)
 #' @format A matrix 475 x 9 measurement points.
 #' @source 2601201.binx TL supra Tanagra C2RMF77756 2-Base; Pan Br4359 C2RMF78067
 #'
@@ -54,6 +54,22 @@ NULL
 #' @usage data(TLgouge)
 #' @format A matrix 475 x 8 measurement points.
 #' @source 2305181.binx TL grain fin gouge à douille
+#'
+
+NULL
+
+#' TL data of an Osiris figurine
+#'
+#' An example of actual data from a TL measurement
+#'
+#' This data set gives the TL growth curves for Osiris FGM0873
+#'
+#' @docType data
+#' @keywords datasets
+#' @name TL.Ser3
+#' @usage data(TLser3)
+#' @format A matrix 475 x 9 measurement points.
+#' @source Serapeum E33273 /FGM0873 1510202.binx
 #'
 
 NULL

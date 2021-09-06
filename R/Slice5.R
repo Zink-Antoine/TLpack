@@ -38,15 +38,14 @@
 #' df.T<-multiTL$df.T
 #' df.y<-multiTL$df.y
 #' n.iter<-multiTL$n.iter
-#' test<-Slice5(Dose,df.T,df.y,n.iter)
+#' test<-Slice5(Dose,df.T,df.y,n.iter=n.iter)
 #' #
 #' if(dev.cur()!=1) dev.off()
 #' data(TLpan, envir = environment())
 #' Dose<-c(0,0,80,80,80,160,160,160)
 #' df.T<-matrix(rep(seq(26,500),8),475,8)
 #' df.y<-TL.Pan[,1:8]
-#' n.iter<-100
-#' Pan<-Slice5(Dose,df.T,df.y,n.iter,inv=TRUE)
+#' Pan<-Slice5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
 #'
 #'
 Slice5<-
@@ -59,7 +58,7 @@ function (Dose,df.T,df.y,
 
 #parameters
 #x.factor<-factor(Dose)
-  n<-length(Dose)
+n<-length(Dose)
 n.y<-seq(1,n)
 Rmx<-apply(df.T,2,max)
 Lmin<-apply(df.T,2,min)
@@ -67,7 +66,7 @@ Lmin<-apply(df.T,2,min)
 #variables: initial values
 mat <- matrix(ncol=5, nrow=n.iter)
 mcInit<-list()
-for (j in 1:ncol(df.y)){
+for (j in ncol(df.y):1){
   repeat{
     mcInit[[j]]<-Slice_Init(df.T[,j],df.y[,j])
     Tj<-mcInit[[j]]$x0
@@ -80,15 +79,14 @@ alpha<- 1
 beta<- 1
 sigma2<- 1
 T<-mcInit[[1]]$x0
-xn<-0
-mat[1, ] <- c(alpha,beta,sigma2, T,xn)
+De<-0
+mat[1, ] <- c(alpha,beta,sigma2, T,De)
 
 for (i in 2:n.iter) {
-
   #Temperature calculation using Slice sampler
   repeat{
     run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
-    print(i)
+   # print(i)
     if (mcInit[[1]]$foo_x(run[[1]])>threshold) break
 
   }
@@ -104,7 +102,7 @@ for (i in 2:n.iter) {
       L<-Sol.hat[[2]]
       R<-Sol.hat[[3]]
     }
-    print(j)
+    #print(j)
   }
   #slice's end
 
