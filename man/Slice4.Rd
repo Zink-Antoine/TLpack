@@ -8,11 +8,12 @@ Slice4(
   Dose,
   df.T,
   df.y,
-  k = 1,
   yn = 0,
+  k = 1,
   n.iter,
   n.burnin = n.iter/2,
-  n.thin = max(1, floor(n.iter - n.burnin)/10)
+  n.thin = max(1, floor(n.iter - n.burnin)/10),
+  threshold = min(df.y[df.y > 0])
 )
 }
 \arguments{
@@ -22,10 +23,10 @@ Slice4(
 
 \item{df.y}{\link{matrix} (\strong{required}) Luminescence data; the luminescence signal}
 
+\item{yn}{\link{numeric} (\strong{with default}) the reference luminescence signal. For MAAD TL, it is extrapolated to yn=0.}
+
 \item{k}{\link{numeric} (\strong{required}) the number of parameters in the group
 involving sigma}
-
-\item{yn}{\link{numeric} (\strong{with default}) intensity value of the 'true' (natural) Dose (in extrapolation, yn = 0)}
 
 \item{n.iter}{\link{numeric} (\strong{required}) the number of iteration}
 
@@ -34,9 +35,12 @@ Default is n.iter/2, that is, discarding the first half of the simulations.}
 
 \item{n.thin}{\link{numeric} (\strong{with default}) thinning rate. Must be a positive integer. Set n.thin > 1 to save memory and computation time if n.iter is large.
 Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there are at least 20 simulations.}
+
+\item{threshold}{\link{numeric} (\strong{with default}) measured point below or equal to the threshold are rejected.
+Default is the minimum measured value.}
 }
 \value{
-an (r × 5)-matrix (mcmc class),
+an (r × 5)-matrix,
 \tabular{lll}{
 \strong{column} \tab \strong{Type} \tab \strong{Description}\cr
 \code{alpha} \tab  \code{numeric} \tab intercept\cr
@@ -48,7 +52,7 @@ an (r × 5)-matrix (mcmc class),
 }
 \description{
 MC Analysis TL (slice +gibbs) following gibbs4.R Hickey (2006)
-Bayesian approach without expert judgement
+Bayesian approach without expert judgment
 additional scalar variable T (Slice sampler)
 }
 \examples{
@@ -59,7 +63,7 @@ Dose<-multiTL$Dose
 df.T<-multiTL$df.T
 df.y<-multiTL$df.y
 n.iter<-multiTL$n.iter
-test<-Slice4(Dose,df.T,df.y,k=1,n.iter=n.iter)
+test<-Slice4(Dose,df.T,df.y,k=1,n.iter)
 
 
 }

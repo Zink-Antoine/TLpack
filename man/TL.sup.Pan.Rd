@@ -11,7 +11,7 @@ A matrix 475 x 9 measurement points.
 2601201.binx TL supra Tanagra C2RMF77756 2-Base; Pan Br4359 C2RMF78067
 }
 \usage{
-data(TLsupPan)
+data(TLsuppan)
 }
 \description{
 An example of actual data from a supralinearity measurement

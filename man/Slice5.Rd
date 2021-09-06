@@ -58,15 +58,14 @@ Dose<-multiTL$Dose
 df.T<-multiTL$df.T
 df.y<-multiTL$df.y
 n.iter<-multiTL$n.iter
-test<-Slice5(Dose,df.T,df.y,n.iter)
+test<-Slice5(Dose,df.T,df.y,n.iter=n.iter)
 #
 if(dev.cur()!=1) dev.off()
 data(TLpan, envir = environment())
 Dose<-c(0,0,80,80,80,160,160,160)
 df.T<-matrix(rep(seq(26,500),8),475,8)
 df.y<-TL.Pan[,1:8]
-n.iter<-100
-Pan<-Slice5(Dose,df.T,df.y,n.iter,inv=TRUE)
+Pan<-Slice5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
 
 
 }
