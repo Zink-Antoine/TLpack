@@ -63,7 +63,7 @@ Dose<-multiTL$Dose
 df.T<-multiTL$df.T
 df.y<-multiTL$df.y
 n.iter<-multiTL$n.iter
-test<-Slice4(Dose,df.T,df.y,k=1,n.iter)
+test<-Slice4(Dose=Dose,df.T=df.T,df.y=df.y,k=1,n.iter=n.iter)
 
 
 }

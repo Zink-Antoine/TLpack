@@ -15,6 +15,8 @@
 #' @param b.check [numeric],[list] (**with default**) list of beta curves to plot
 #' @param a.check [numeric],[list] (**with default**) list of alpha curves to plot
 #' @param sup.check [numeric],[list] (**with default**) list of supralinarity curves to plot
+#' @param brate [numeric] (**with default**) dose rate of the beta source (default value 0.1 Gy/s)
+#' @param arate [numeric] (**with default**) dose rate of the alpha source (default value 0.1 micro-2)
 #'
 #' @return plot figures
 #'
@@ -24,7 +26,13 @@
 #'
 
 'TL.plot'<-
-function(file,nomFile="",ech=1,Doseb0=90,Dosea0=0,supra=FALSE,norm=FALSE,plateau=seq(200,500),Temp=seq(26,599),NumInv="",b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9)) {
+function(file,nomFile="",ech=1,
+         Doseb0=90,Dosea0=0,
+         supra=FALSE,norm=FALSE,
+         plateau=seq(200,500),Temp=seq(26,599),
+         NumInv="",
+         b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9),
+         brate=0.1, arate=0.1) {
 
 	alpha<-Dosea0>1
 	plateau.corr<-mapply(Canal,Temp=plateau,file=list(file[[1]]))
@@ -103,13 +111,13 @@ function(file,nomFile="",ech=1,Doseb0=90,Dosea0=0,supra=FALSE,norm=FALSE,plateau
 
 	plot.default(c(0,100), c(0,100), type="n", axes=FALSE,ylab="", xlab="")
 
-	position<-c(-5,30,70)
+	position<-c(-5,35,75)
 	couleur<-c("black","red","green")
-	beta.text<-c("beta : Nat","Nat+10.4Gy","Nat+21,0Gy")
-	alpha.text<-c("alpha : Nat",paste("Nat+10.6\u00b5","m-2",sep=""),paste("Nat+21.1\u00b5","m-2",sep=""))
-	supra.text<-c("supra : 10.4Gy","     21.0Gy","31.4Gy")
+	beta.text<-c("beta : Nat",paste("Nat+",Doseb0*brate,"Gy",sep=""),paste("Nat+",2*Doseb0*brate,"Gy",sep=""))
+	alpha.text<-c("alpha : Nat",paste("Nat+",Dosea0*arate,"\u00b5","m-2",sep=""),paste("Nat+",2*Dosea0*arate,"\u00b5","m-2",sep=""))
+	supra.text<-c(paste("supra :",Doseb0*brate,"Gy  ",sep=""),paste(2*Doseb0*brate,"Gy  ",sep=""),paste(3*Doseb0*brate,"Gy",sep=""))
 
-	text(50,90,paste("n? inv. ",NumInv))
+	text(50,90,paste("n. inv. ",NumInv))
 	text(50,80,"Thermoluminescence")
 	text(50,70,paste("1re chauffe : fichier ",nomFile[[1]][1]))
 	text(position,60,beta.text,col=couleur,pos=4,cex=0.9)

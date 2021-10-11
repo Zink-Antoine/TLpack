@@ -17,7 +17,9 @@ TL.plot(
   NumInv = "",
   b.check = rep(1, 9),
   a.check = rep(1, 4),
-  sup.check = rep(1, 9)
+  sup.check = rep(1, 9),
+  brate = 0.1,
+  arate = 0.1
 )
 }
 \arguments{
@@ -46,6 +48,10 @@ TL.plot(
 \item{a.check}{\link{numeric},\link{list} (\strong{with default}) list of alpha curves to plot}
 
 \item{sup.check}{\link{numeric},\link{list} (\strong{with default}) list of supralinarity curves to plot}
+
+\item{brate}{\link{numeric} (\strong{with default}) dose rate of the beta source (default value 0.1 Gy/s)}
+
+\item{arate}{\link{numeric} (\strong{with default}) dose rate of the alpha source (default value 0.1 micro-2)}
 }
 \value{
 plot figures

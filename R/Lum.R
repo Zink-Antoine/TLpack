@@ -137,7 +137,7 @@ function(file,ech=1,Doseb0=90,Dosea0=90,alpha=TRUE,supra=TRUE,TypLum=c("TL","BG"
 #' @noRd
 #'
 Raw.Data<-function(file,ech,n.chauf) {
-  file.sel<-OSLpack::ExtractFile(file=file,n_file=n.chauf)[[n.chauf]]
+  file.sel<-OSLpack::ExtractFile(file=file,n_file=n.chauf)
   L<-length(file.sel)   #number of measurements
   corr<-L%%36
   L<-L-corr   #number of measurements without the furnace pre-annealing
