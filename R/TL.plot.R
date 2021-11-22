@@ -24,6 +24,16 @@
 #'
 #' @export
 #'
+#' @examples
+#'
+#' \dontrun{
+#' library(OSLpack)
+#' file<-OSLpack::ReadFile(n=1)
+#'
+#' File<-file$FILE
+#' NFile<-file$NFILE
+#' }
+#'
 
 'TL.plot'<-
 function(file,nomFile="",ech=1,
@@ -117,7 +127,7 @@ function(file,nomFile="",ech=1,
 	alpha.text<-c("alpha : Nat",paste("Nat+",Dosea0*arate,"\u00b5","m-2",sep=""),paste("Nat+",2*Dosea0*arate,"\u00b5","m-2",sep=""))
 	supra.text<-c(paste("supra :",Doseb0*brate,"Gy  ",sep=""),paste(2*Doseb0*brate,"Gy  ",sep=""),paste(3*Doseb0*brate,"Gy",sep=""))
 
-	text(50,90,paste("n. inv. ",NumInv))
+	text(50,90,paste("n. inv. ",NumInv[ech]))
 	text(50,80,"Thermoluminescence")
 	text(50,70,paste("1re chauffe : fichier ",nomFile[[1]][1]))
 	text(position,60,beta.text,col=couleur,pos=4,cex=0.9)

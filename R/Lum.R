@@ -145,7 +145,7 @@ Raw.Data<-function(file,ech,n.chauf) {
   if (L==72)	L<-36#two samples
   Brut<-file.sel@DATA[seq(1,L)+corr]  #Raw data from heating n.chauf after removal of the furnace pre-annealing
   if (ech==2){
-    Brut<-file.sel@DATA[seq(L,2*L)+corr]
+    Brut<-file.sel@DATA[seq(L+1,2*L)+corr]
   }
   TL<-seq(1,L-1,2) # TL numbering
   BG<-seq(2,L,2) # BG numbering
