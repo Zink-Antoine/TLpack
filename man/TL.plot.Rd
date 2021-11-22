@@ -59,3 +59,14 @@ plot figures
 \description{
 plot for TL measurements
 }
+\examples{
+
+\dontrun{
+library(OSLpack)
+file<-OSLpack::ReadFile(n=1)
+
+File<-file$FILE
+NFile<-file$NFILE
+}
+
+}
