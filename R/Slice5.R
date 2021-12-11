@@ -46,7 +46,29 @@
 #' df.T<-matrix(rep(seq(26,500),8),475,8)
 #' df.y<-TL.Pan[,1:8]
 #' Pan<-Slice5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
-#'
+#' #
+#' \dontrun{
+#' data(TLetru)
+#' table<-Lum(TLetru,Doseb0=360,Dosea=0,alpha=FALSE,supra=FALSE)
+#' B<-table$b
+#' N<-table$n
+#' table.norm<-B
+#'  for (j in 1:3){
+#'    for (i in 1:3)
+#'      {
+#'        table.norm[,i,j]<-(B[,i,j])/sum(N[seq(350,400),1,(j-1)*3+i])
+#'        }
+#'    }
+#'  table.data<-cbind(table.norm[,,1],table.norm[,,2],table.norm[,,3])
+#'  ii<-c(1,4,7,2,5,8,3,6,9)
+#'  table.data<-table.data[seq(1,475),ii]
+#'  Dose<-as.numeric(colnames(table.data))
+#'  df.T<-matrix(rep(seq(26,500),9),475,9)
+#'  df.y<-table.data[,1:9]
+
+#'  plot(seq(26,500),table.data[,8])
+#'  Slice5(Dose,df.T,df.y,n.iter=10,inv=FALSE)
+#'  }
 #'
 Slice5<-
 function (Dose,df.T,df.y,

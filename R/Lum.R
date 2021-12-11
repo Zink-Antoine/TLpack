@@ -1,7 +1,7 @@
 #' Lum
 #' extracts TL measurements
 #'
-#' @inheritParams TL.plot
+#' @inheritParams multiplot.TL
 #'
 #' @param alpha [logical] (**with default**) TRUE if alpha measurements are included. Based on the number of data file, the value is corrected and returned
 #' @param TypLum [character],[list] (**with default**) luminescence type "TL" = signal; "BG" = background

@@ -79,7 +79,7 @@ for (i in 2:n.iter) {
   #Temperature calculation using Slice sampler
   repeat{
     run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
-    print(i)
+   # print(i)
     if (mcInit[[1]]$foo_x(run[[1]])>threshold) break
 
   }
@@ -95,7 +95,7 @@ for (i in 2:n.iter) {
       L<-Sol.hat[[2]]
       R<-Sol.hat[[3]]
     }
-    print(j)
+    #print(j)
   }
 #slice's end
 
