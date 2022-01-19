@@ -17,10 +17,13 @@ data(TLetru2)
 An example of actual data from a TL measurement
 }
 \details{
-This data set gives the TL growth curves for Etruscan vase D173
-code to obtain Dose, df.T, df.y from Risoe.BINFile file
+This data set gives the TL growth curves for Etruscan vase D173.
 
-table<-Lum(file,Doseb=180,alpha=FALSE,supra=FALSE)
+to find how to get Dose, df.T, df.y from Risoe.BINFile file, see example section
+}
+\examples{
+data(TLetru2)
+table<-Lum(TLetru2,Doseb=180,alpha=FALSE,supra=FALSE)
 
 B<-table$b
 N<-table$n
@@ -28,18 +31,18 @@ N<-table$n
 table.norm<-table$b
 
 for (j in 1:3){
-for (i in 1:3)
-{
-table.norm\link{,i,j}<-(B\link{,i,j})/sum(N\link{seq(355,405),1,(j-1)*3+i})  #norm sur 380-430°C
-}
+  for (i in 1:3)
+  {
+    table.norm[,i,j]<-(B[,i,j])/sum(N[seq(355,405),1,(j-1)*3+i])  #norm sur 380-430°C
+  }
 }
 
-table.données<-cbind(table.norm\link{,,1},table.norm\link{,,2},table.norm\link{,,3})
+table.données<-cbind(table.norm[,,1],table.norm[,,2],table.norm[,,3])
 ii<-c(1,4,7,2,5,8,3,6,9)
-table.données<-table.données\link{seq(1,475),ii}
+table.données<-table.données[seq(1,475),ii]
 
 Dose<-c(0,0,0,180,180,180,360,360,360)
 df.T<-matrix(rep(seq(26,500),9),475,9)
-df.y<-table.données\link{,1:9}
+df.y<-table.données[,1:9]
 }
 \keyword{datasets}
