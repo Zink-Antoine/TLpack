@@ -94,10 +94,21 @@ NULL
 #'
 #' An example of actual data from a TL measurement
 #'
-#' This data set gives the TL growth curves for Etruscan vase D173
-#' code to obtain Dose, df.T, df.y from Risoe.BINFile file
+#' This data set gives the TL growth curves for Etruscan vase D173.
 #'
-#' table<-Lum(file,Doseb=180,alpha=FALSE,supra=FALSE)
+#'to find how to get Dose, df.T, df.y from Risoe.BINFile file, see example section
+#'
+#'
+#' @docType data
+#' @keywords datasets
+#' @name TLetru2
+#' @usage data(TLetru2)
+#' @format A Risoe.BINfileData.object
+#' @source 2703141.bin D173
+#'
+#' @examples
+#' data(TLetru2)
+#' table<-Lum(TLetru2,Doseb=180,alpha=FALSE,supra=FALSE)
 #'
 #' B<-table$b
 #' N<-table$n
@@ -118,14 +129,5 @@ NULL
 #' Dose<-c(0,0,0,180,180,180,360,360,360)
 #' df.T<-matrix(rep(seq(26,500),9),475,9)
 #' df.y<-table.données[,1:9]
-
-#'
-#' @docType data
-#' @keywords datasets
-#' @name TLetru2
-#' @usage data(TLetru2)
-#' @format A Risoe.BINfileData.object
-#' @source 2703141.bin D173
-#'
 
 NULL
