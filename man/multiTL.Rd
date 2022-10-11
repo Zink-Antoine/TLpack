@@ -16,6 +16,6 @@ multiTL
 TL example from RLumModel
 a dataset containing multiples TL calculated with RLumModel
 call function "model_LuminescenceSignals", model = "Bailey2001"
-the irradiation dose is varied and then compared, and parameters for #’ the various Slice functions
+the irradiation dose is varied and then compared, and parameters for the various Slice functions
 }
 \keyword{datasets}
