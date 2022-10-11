@@ -11,6 +11,9 @@
 #' @param norm [logical] (**with default**) TRUE if the measurements are normalized.
 #' @param plateau [numeric],[list] (**with default**) the plateau range for normalization
 #' @param Temp [numeric],[list] (**with default**) the temperature range
+#' @param Ib.max [numeric] (**with default**) the Y-axis range for beta curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25%)
+#' @param Ia.max [numeric] (**with default**) the Y-axis range for alpha curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25%)
+#' @param Isup.max [numeric] (**with default**) the Y-axis range for supralinearity curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25%)
 #' @param NumInv [character] (**with default**) the inventory number
 #' @param b.check [numeric],[list] (**with default**) list of beta curves to plot
 #' @param a.check [numeric],[list] (**with default**) list of alpha curves to plot
@@ -32,6 +35,10 @@
 #'
 #' File<-file$FILE
 #' NFile<-file$NFILE
+#'
+#' png("TLplot.png",width=720,height=960)
+#' multiplot.TL(file=File,nomFile=NFile)
+#' dev.off()
 #' }
 #'
 
@@ -40,6 +47,7 @@ function(file,nomFile="",ech=1,
          Doseb0=90,Dosea0=0,
          supra=FALSE,norm=FALSE,
          plateau=seq(200,500),Temp=seq(26,599),
+         Ib.max=-1,Ia.max=-1,Isup.max=-1,
          NumInv="",
          b.check=rep(1,9),a.check=rep(1,4),sup.check=rep(1,9),
          brate=0.1, arate=0.1) {
@@ -75,7 +83,9 @@ function(file,nomFile="",ech=1,
 		if (supra) Isup[NaN]<-0
 	}
 
-	plot(Temp,xlim=c(20,500),ylim=c(0,max(Ib[seq(175,450),,])*1.25),col=1,type="l",axes=FALSE)
+	if (Ib.max<0){Ib.max=max(Ib[seq(175,450),,])*1.25}
+
+	plot(Temp,xlim=c(20,500),ylim=c(0,Ib.max),col=1,type="l",axes=FALSE)
 	axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 	axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 	box()
@@ -89,7 +99,8 @@ function(file,nomFile="",ech=1,
 
 	if (alpha)
 	{
-		plot(Temp,xlim=c(20,500),ylim=c(0,max(Ia[seq(175,450),,])*1.25),col=1,type="l",axes=FALSE)
+	  if (Ia.max<0){Ia.max=max(Ia[seq(175,450),,])*1.25}
+		plot(Temp,xlim=c(20,500),ylim=c(0,Ia.max),col=1,type="l",axes=FALSE)
 		axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 		axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 		box()
@@ -106,7 +117,8 @@ function(file,nomFile="",ech=1,
 
 	if (supra)
 	{
-		plot(Temp,xlim=c(20,500),ylim=c(0,max(Isup[seq(175,450),,])*1.25),col=1,type="l",axes=FALSE)
+	  if (Isup.max<0){Isup.max=max(Isup[seq(175,450),,])*1.25}
+		plot(Temp,xlim=c(20,500),ylim=c(0,Isup.max),col=1,type="l",axes=FALSE)
 		axis(1,tcl=-0.2,padj=-2,cex.axis=0.7)
 		axis(2,tcl=-0.2,padj=2,cex.axis=0.7)
 		box()

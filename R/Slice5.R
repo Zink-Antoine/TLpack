@@ -146,20 +146,19 @@ for (i in 2:n.iter) {
   S2<-(1/n+mean(X)^2/Sxx)
   alpha<-rnorm(1,mean=S1,sd=sqrt(sigma2*S2))
 
-#  SE<-tapply(df.y[m,n.y],x.factor,Err)
-#  e2<-apply(df.y[seq(m-1,m+1),],2,var)
-#  e2<-tapply(e2,x.factor,mean)
-#  SE[is.na(SE)]=e2[is.na(SE)]
   SE<-(Y-alpha-beta*X)^2
   SSE<-sum(SE)
-  tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
-  sigma2<-1/tau
+ # tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
+ # sigma2<-1/tau
+  sigma2<-SSE/(n-2)
 
-  De<-rnorm(1,-alpha/beta,sqrt(sigma2))
+  var1<-sigma2*(1/(n*beta^2)+(mean(X)/beta^2+alpha^2/beta^4)/Sxx)
 
-  mat[i,]<-c(alpha,beta,sigma2,round(T),De)
+  De<-rnorm(1,-alpha/beta,sqrt(var1))
+
+  mat[i,]<-c(alpha,beta,var1,round(T),De)
 }
-colnames(mat)<-c("intercept","x","sigma2","Temperature","natural dose")
+colnames(mat)<-c("intercept","x","var","Temperature","natural dose")
 mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
 mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
 }
