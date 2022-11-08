@@ -6,8 +6,6 @@
 #'
 #'
 #' @inheritParams Slice1
-#' @param inv [logical] (**with default**) TRUE to calculate the inverse estimator.
-#' Default is FALSE: i.e. the direct estimator
 #' @param n.burnin [numeric] (**with default**)	number of iterations to discard at the beginning (burn in).
 #'  Default is n.iter/2, that is, discarding the first half of the simulations.
 #' @param n.thin [numeric] (**with default**) thinning rate. Must be a positive integer. Set n.thin > 1 to save memory and computation time if n.iter is large.
@@ -45,7 +43,7 @@
 #' Dose<-c(0,0,80,80,80,160,160,160)
 #' df.T<-matrix(rep(seq(26,500),8),475,8)
 #' df.y<-TL.Pan[,1:8]
-#' Pan<-Slice5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
+#' Pan<-Slice5(Dose,df.T,df.y,n.iter=100)
 #' #
 #' \dontrun{
 #' data(TLetru)
@@ -67,16 +65,13 @@
 #'  df.y<-table.data[,1:9]
 
 #'  plot(seq(26,500),table.data[,8])
-#'  Slice5(Dose,df.T,df.y,n.iter=10,inv=FALSE)
+#'  Slice5(Dose,df.T,df.y,n.iter=10)
 #'  }
 #'
 Slice5<-
 function (Dose,df.T,df.y,
-            n.iter,inv=FALSE,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10),
+            n.iter,n.burnin=n.iter/2,n.thin=max(1,floor(n.iter-n.burnin)/10),
               threshold=min(df.y[df.y>0])) {
-
-#internal function
-#Err<-function(y){var(y)*(length(y)-1)}
 
 #parameters
 #x.factor<-factor(Dose)
@@ -84,6 +79,7 @@ n<-length(Dose)
 n.y<-seq(1,n)
 Rmx<-apply(df.T,2,max)
 Lmin<-apply(df.T,2,min)
+
 
 #variables: initial values
 mat <- matrix(ncol=5, nrow=n.iter)
@@ -101,14 +97,20 @@ alpha<- 1
 beta<- 1
 sigma2<- 1
 T<-mcInit[[1]]$x0
+ch<-mcInit[[1]]$hist_y$mids
+threshold<-min(ch)+(max(ch)-min(ch))/length(ch)
 De<-0
 mat[1, ] <- c(alpha,beta,sigma2, T,De)
+print(threshold)
 
 for (i in 2:n.iter) {
   #Temperature calculation using Slice sampler
   repeat{
+    if(mcInit[[1]]$foo_x(T)<threshold){T<-mcInit[[1]]$x0}
     run<-Slice_Run(T,mcInit[[1]]$foo_x,mcInit[[1]]$foo_y,mcInit[[1]]$hist_y,Rmx=Rmx[[1]])
-   # print(i)
+# print(i)
+#   print(mcInit[[1]]$foo_x(run[[1]])>threshold)
+#
     if (mcInit[[1]]$foo_x(run[[1]])>threshold) break
 
   }
@@ -129,14 +131,9 @@ for (i in 2:n.iter) {
   #slice's end
 
   m<-which(df.T[,1]==round(T))
-  if (inv) {
-	  Y<-Dose
-	  X<-df.y[m,n.y]
-  }
-  else{
-	  X<-Dose
-	  Y<-df.y[m,n.y]
-  }
+
+	X<-Dose
+	Y<-df.y[m,n.y]
 
   Sxx<-sum((X-mean(X))^2)
   Sxy<-sum((X-mean(X))*(Y-mean(Y)))
@@ -148,17 +145,15 @@ for (i in 2:n.iter) {
 
   SE<-(Y-alpha-beta*X)^2
   SSE<-sum(SE)
- # tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
- # sigma2<-1/tau
   sigma2<-SSE/(n-2)
 
-  var1<-sigma2*(1/(n*beta^2)+(mean(X)/beta^2+alpha^2/beta^4)/Sxx)
+  var1<- (sigma2/beta^2)*(1/n+(mean(X)+(-alpha/beta)^2)/Sxx)
 
-  De<-rnorm(1,-alpha/beta,sqrt(var1))
+  De<-rnorm(1,alpha/beta,sqrt(var1))
 
-  mat[i,]<-c(alpha,beta,var1,round(T),De)
+  mat[i,]<-c(alpha,beta,sqrt(var1),round(T),De)
 }
-colnames(mat)<-c("intercept","x","var","Temperature","natural dose")
+colnames(mat)<-c("intercept","x","std dev","Temperature","natural dose")
 mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
 mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
 }
