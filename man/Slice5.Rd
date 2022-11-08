@@ -9,7 +9,6 @@ Slice5(
   df.T,
   df.y,
   n.iter,
-  inv = FALSE,
   n.burnin = n.iter/2,
   n.thin = max(1, floor(n.iter - n.burnin)/10),
   threshold = min(df.y[df.y > 0])
@@ -23,9 +22,6 @@ Slice5(
 \item{df.y}{\link{matrix} (\strong{required}) Luminescence data; the luminescence signal}
 
 \item{n.iter}{\link{numeric} (\strong{required}) the number of iteration}
-
-\item{inv}{\link{logical} (\strong{with default}) TRUE to calculate the inverse estimator.
-Default is FALSE: i.e. the direct estimator}
 
 \item{n.burnin}{\link{numeric} (\strong{with default})    number of iterations to discard at the beginning (burn in).
 Default is n.iter/2, that is, discarding the first half of the simulations.}
@@ -65,7 +61,7 @@ data(TLpan, envir = environment())
 Dose<-c(0,0,80,80,80,160,160,160)
 df.T<-matrix(rep(seq(26,500),8),475,8)
 df.y<-TL.Pan[,1:8]
-Pan<-Slice5(Dose,df.T,df.y,n.iter=100,inv=TRUE)
+Pan<-Slice5(Dose,df.T,df.y,n.iter=100)
 #
 \dontrun{
 data(TLetru)
@@ -86,7 +82,7 @@ table.norm<-B
  df.T<-matrix(rep(seq(26,500),9),475,9)
  df.y<-table.data[,1:9]
  plot(seq(26,500),table.data[,8])
- Slice5(Dose,df.T,df.y,n.iter=10,inv=FALSE)
+ Slice5(Dose,df.T,df.y,n.iter=10)
  }
 
 }
