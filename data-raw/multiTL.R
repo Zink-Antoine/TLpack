@@ -2,21 +2,30 @@
 require(RLumModel)
 require(Luminescence)
 
-irradiation_dose <- seq(from = 0,to = 100,by = 20)
+irradiation_dose <- c(200,200,200,400,400,400,600,600,600)
 model.output <- lapply(irradiation_dose,
                        function(x){
-                         sequence <- list(IRR = c(20, x, 1),
+                         sequence <- list(IRR = c(20, x, 0.1),
                                           #PH = c(220, 10, 5),
                                           TL=c(20,400,5))
                          data <- model_LuminescenceSignals(
                            sequence = sequence,
                            model = "Bailey2001",
                            plot = FALSE,
-                           verbose = FALSE)
+                           verbose = FALSE,
+                           simulate_sample_history = TRUE
+                          )
                          return(get_RLum(data, recordType = "TL$", drop = FALSE))
                        })
+
+
 ##combine output curves
 TL_curve.merged <- merge_RLum(model.output)
+
+n.pt<-length(TL_curve.merged[1]$data[,1])
+n.irr<-length(irradiation_dose)
+
+
 ##plot
 plot_RLum(
   object = TL_curve.merged,
@@ -26,23 +35,28 @@ plot_RLum(
   legend.text = paste("dose", irradiation_dose, "Gy"),
   combine = TRUE)
 ##
-n.pt<-length(TL_curve.merged[1]$data[,1])
-n.irr<-length(irradiation_dose)
+
 y<-x<-array(dim=c(n.pt,n.irr))
+
 for (i in 1:n.irr){
-  x[,i]<-TL_curve.merged[i]$data[,1]
-  y[,i]<-TL_curve.merged[i]$data[,2]
+  x[,i]<-round(TL_curve.merged[i]$data[,1],1)
+  y[,i]<-TL_curve.merged[i]$data[,2]*runif(1,0.8,1.2)
 }
 
+##plot
+plot(x[,c(7,8,9)],y[,c(7,8,9)],col=4,type="l",
+     xlab = "Temperature [°C]",
+     ylab = "TL signal [a.u.]",
+     main = "TL signal with various dose",
+     )
+lines(x[,c(4,5,6)],y[,c(4,5,6)],col=3)
+lines(x[,c(1,2,3)],y[,c(1,2,3)],col=2)
+legend("topright",legend = paste("dose",unique(irradiation_dose)," Gy"),col=c(2,3,4),lty=1)
+
 multiTL<-list(
-  Dose=seq(20,120,20),
+  Dose=c(0,0,0,200,200,200,400,400,400),
   df.T=x,
   df.y=y,
-  mu_b=2500,
-  mu_0= 0,
-  var_b=2500,
-  var_0=10,
-  var_y=10,
   n.iter=10
 )
 
