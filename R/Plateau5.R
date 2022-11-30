@@ -97,14 +97,15 @@ Plateau5<-
 
       SE<-(Y-alpha-beta*X)^2
       SSE<-sum(SE)
-      tau<-rgamma(1,shape=((n-2)/2),rate=(SSE/2))
-      sigma2<-1/tau
+      sigma2<-SSE/(n-2)
 
-      De<-rnorm(1,-alpha/beta,sqrt(sigma2))
+      var1<- (sigma2/beta^2)*(1/n+(mean(X)+(-alpha/beta)^2)/Sxx)
 
-      mat[i,]<-c(alpha,beta,sigma2,T1,T2,De)
+      De<-rnorm(1,alpha/beta,sqrt(var1))
+
+      mat[i,]<-c(alpha,beta,sqrt(var1),T1,T2,De)
     }
-    colnames(mat)<-c("intercept","x","sigma2","Temperature1","Temperature2","natural dose")
+    colnames(mat)<-c("intercept","x","std dev","Temperature1","Temperature2","natural dose")
     mat<-mat[seq(n.burnin+1,n.iter,n.thin),]
     mcmc(mat,start=n.burnin+1,end=n.iter,thin=n.thin)
   }
