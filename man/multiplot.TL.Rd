@@ -14,6 +14,9 @@ multiplot.TL(
   norm = FALSE,
   plateau = seq(200, 500),
   Temp = seq(26, 599),
+  Ib.max = -1,
+  Ia.max = -1,
+  Isup.max = -1,
   NumInv = "",
   b.check = rep(1, 9),
   a.check = rep(1, 4),
@@ -41,6 +44,12 @@ multiplot.TL(
 
 \item{Temp}{\link{numeric},\link{list} (\strong{with default}) the temperature range}
 
+\item{Ib.max}{\link{numeric} (\strong{with default}) the Y-axis range for beta curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25\%)}
+
+\item{Ia.max}{\link{numeric} (\strong{with default}) the Y-axis range for alpha curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25\%)}
+
+\item{Isup.max}{\link{numeric} (\strong{with default}) the Y-axis range for supralinearity curve (default value is the maximum of TL intensity between 175°C and 450°C increased by 25\%)}
+
 \item{NumInv}{\link{character} (\strong{with default}) the inventory number}
 
 \item{b.check}{\link{numeric},\link{list} (\strong{with default}) list of beta curves to plot}
@@ -67,6 +76,10 @@ file<-OSLpack::ReadFile(n=1)
 
 File<-file$FILE
 NFile<-file$NFILE
+
+png("TLplot.png",width=720,height=960)
+multiplot.TL(file=File,nomFile=NFile)
+dev.off()
 }
 
 }

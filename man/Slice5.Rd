@@ -33,14 +33,14 @@ Default is max(1, floor((n.iter-n.burnin) / 10)) which will only thin if there a
 Default is the minimum measured value.}
 }
 \value{
-an (r × 5)-matrix,
+an mcmc object,
 \tabular{lll}{
 \strong{column} \tab \strong{Type} \tab \strong{Description}\cr
-\code{alpha} \tab  \code{numeric} \tab intercept\cr
-\code{beta} \tab \code{numeric} \tab slope \cr
-\code{sigma2} \tab  \code{numeric} \tab variance\cr
-\code{T} \tab \code{numeric} \tab Temperature \cr
-\code{De} \tab \code{numeric} \tab 'True' Dose value \cr
+\code{intercept} \tab  \code{numeric} \tab intercept\cr
+\code{x} \tab \code{numeric} \tab slope \cr
+\code{std.dev} \tab  \code{numeric} \tab standard deviation\cr
+\code{Temperature} \tab \code{numeric} \tab Temperature \cr
+\verb{natural dose} \tab \code{numeric} \tab estimated Dose value \cr
 }
 }
 \description{

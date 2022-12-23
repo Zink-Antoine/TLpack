@@ -40,13 +40,14 @@ extrapolation y0=0 (gibbs1)
 additional scalar variable T (Slice sampler)
 }
 \examples{
+\dontrun{
 ##load data
 if(dev.cur()!=1) dev.off()
 data(multiTL, envir = environment())
 attach(multiTL)
 Slice1(Dose,df.T,df.y,mu_b,mu_0,var_b,var_0,var_y,n.iter)
 detach(multiTL)
-
+}
 
 }
 \references{

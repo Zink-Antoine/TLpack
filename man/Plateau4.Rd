@@ -13,6 +13,7 @@ Plateau4(
   k = 1,
   yn = 0,
   n.iter,
+  inv = FALSE,
   n.burnin = n.iter/2,
   n.thin = max(1, floor(n.iter - n.burnin)/10)
 )
@@ -31,9 +32,11 @@ Plateau4(
 \item{k}{\link{numeric} (\strong{required}) the number of parameters in the group
 involving sigma}
 
-\item{yn}{\link{numeric} (\strong{with default}) intensity value of the 'true' (natural) Dose (in extrapolation, yn = 0)}
+\item{yn}{\link{numeric} (\strong{with default}) the reference luminescence signal. For MAAD TL, it is extrapolated to yn=0.}
 
 \item{n.iter}{\link{numeric} (\strong{required}) the number of iteration}
+
+\item{inv}{\link{logical} (\strong{with default value}) inverse (TRUE) or direct (FALSE) regression (default value FALSE)}
 
 \item{n.burnin}{\link{numeric} (\strong{with default})    number of iterations to discard at the beginning (burn in).
 Default is n.iter/2, that is, discarding the first half of the simulations.}
