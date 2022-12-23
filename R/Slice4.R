@@ -52,7 +52,7 @@ function (Dose,df.T,df.y,yn=0, k=1,
 
   n<-length(Dose)
   df.x<-Dose
-  n.x<-seq(1,n)
+  n.y<-seq(1,n)
   Rmx<-apply(df.T,2,max)
   Lmin<-apply(df.T,2,min)
 
@@ -72,8 +72,8 @@ function (Dose,df.T,df.y,yn=0, k=1,
   beta<- 1
   sigma2<- 1
   T<-mcInit[[1]]$x0
-  De<-0
-  mat[1, ] <- c(alpha,beta,sigma2, T,De)
+  X0<-0
+  mat[1, ] <- c(alpha,beta,sigma2, T,X0)
 
 for (i in 2:n.iter) {
   #Temperature calculation using Slice sampler
@@ -100,6 +100,9 @@ for (i in 2:n.iter) {
 #slice's end
 
 m<-which(df.T[,1]==round(T))
+
+X<-Dose
+Y<-df.y[m,n.y]
 
 sxx<-sum((X-mean(X))^2)
 S1<-sum(Y-beta*X)+yn-(beta*X0)

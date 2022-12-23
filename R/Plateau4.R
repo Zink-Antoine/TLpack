@@ -8,6 +8,7 @@
 #' @inheritParams Slice1
 #' @inheritParams Plateau5
 #' @inheritParams Slice4
+#' @param inv [logical] (**with default value**) inverse (TRUE) or direct (FALSE) regression (default value FALSE)
 #'
 #'
 #' @return an (r × 5)-matrix (mcmc class),

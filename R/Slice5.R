@@ -16,14 +16,14 @@
 #' @import Slice
 #' @import coda
 #'
-#' @return an (r × 5)-matrix,
+#' @return an mcmc object,
 #' \tabular{lll}{
 #'  **column** \tab **Type** \tab **Description**\cr
-#'  `alpha` \tab  `numeric` \tab intercept\cr
-#'  `beta` \tab `numeric` \tab slope \cr
-#'  `sigma2` \tab  `numeric` \tab variance\cr
-#'  `T` \tab `numeric` \tab Temperature \cr
-#'  `De` \tab `numeric` \tab 'True' Dose value \cr
+#'  `intercept` \tab  `numeric` \tab intercept\cr
+#'  `x` \tab `numeric` \tab slope \cr
+#'  `std.dev` \tab  `numeric` \tab standard deviation\cr
+#'  `Temperature` \tab `numeric` \tab Temperature \cr
+#'  `natural dose` \tab `numeric` \tab estimated Dose value \cr
 #' }
 #'
 #' @export
@@ -95,12 +95,12 @@ for (j in ncol(df.y):1){
 
 alpha<- 1
 beta<- 1
-sigma2<- 1
+var<- 1
 T<-mcInit[[1]]$x0
 ch<-mcInit[[1]]$hist_y$mids
 threshold<-min(ch)+(max(ch)-min(ch))/length(ch)
 De<-0
-mat[1, ] <- c(alpha,beta,sigma2, T,De)
+mat[1, ] <- c(alpha,beta,var, T,De)
 print(threshold)
 
 for (i in 2:n.iter) {
@@ -137,17 +137,17 @@ for (i in 2:n.iter) {
 
   Sxx<-sum((X-mean(X))^2)
   Sxy<-sum((X-mean(X))*(Y-mean(Y)))
-  beta<-rnorm(1,mean=(Sxy/Sxx),sd=sqrt(sigma2/Sxx))
+  beta<-rnorm(1,mean=(Sxy/Sxx),sd=sqrt(var/Sxx))
 
   S1<-mean(Y)-beta*mean(X)
   S2<-(1/n+mean(X)^2/Sxx)
-  alpha<-rnorm(1,mean=S1,sd=sqrt(sigma2*S2))
+  alpha<-rnorm(1,mean=S1,sd=sqrt(var*S2))
 
   SE<-(Y-alpha-beta*X)^2
   SSE<-sum(SE)
-  sigma2<-SSE/(n-2)
+  var<-SSE/(n-2)
 
-  var1<- (sigma2/beta^2)*(1/n+(mean(X)+(-alpha/beta)^2)/Sxx)
+  var1<- (var/beta^2)*(1/n+(mean(X)+(-alpha/beta)^2)/Sxx)
 
   De<-rnorm(1,alpha/beta,sqrt(var1))
 
