@@ -93,13 +93,15 @@ for (j in ncol(df.y):1){
   }
 }
 
-alpha<- 1
-beta<- 1
+alpha_n<-alpha<- 1
+beta_n<-beta<- 1
 var<- 1
-T<-mcInit[[1]]$x0
+Sxx<-sum((Dose-mean(Dose))^2)
+var1_n<-var1<- (var/beta^2)*(1/n+(mean(Dose)+(-alpha/beta)^2)/Sxx)
+T_n<-T<-mcInit[[1]]$x0
 ch<-mcInit[[1]]$hist_y$mids
 threshold<-min(ch)+(max(ch)-min(ch))/length(ch)
-De<-0
+De_n<-De<-0
 mat[1, ] <- c(alpha,beta,var, T,De)
 print(threshold)
 
@@ -150,6 +152,23 @@ for (i in 2:n.iter) {
   var1<- (var/beta^2)*(1/n+(mean(X)+(-alpha/beta)^2)/Sxx)
 
   De<-rnorm(1,alpha/beta,sqrt(var1))
+
+  #slope condition
+  u<-rexp(1,rate = 15000/(mean(Dose)))
+  if(u<abs((De-De_n)/(T-T_n))){
+    var1<-var1_n;
+    De<-De_n
+    beta<-beta_n
+    alpha<-alpha_n
+    T<-T_n
+  }
+
+  alpha_n<-alpha
+  beta_n<-beta
+  De_n<-De
+  var1_n<-var1
+  T_n<-T
+
 
   mat[i,]<-c(alpha,beta,sqrt(var1),round(T),De)
 }
