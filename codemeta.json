@@ -1,0 +1,120 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "identifier": "TLpack",
+  "description": "Various function to analyze and plot TL measurement using MCMC code based on Gibbs and Slice samplers.",
+  "name": "TLpack: Analyse TL measurement using Bayesian approach, MCMC, Gibbs and slice samplers",
+  "license": "CeCILL-2",
+  "version": "0.0.0.9000",
+  "programmingLanguage": {
+    "@type": "ComputerLanguage",
+    "name": "R",
+    "url": "https://r-project.org"
+  },
+  "runtimePlatform": "R version 4.3.3 (2024-02-29 ucrt)",
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Antoine",
+      "familyName": "Zink",
+      "email": "antoine.zink@culture.gouv.fr",
+      "@id": "https://orcid.org/0000-0001-7146-1101"
+    }
+  ],
+  "maintainer": [
+    {
+      "@type": "Person",
+      "givenName": "Antoine",
+      "familyName": "Zink",
+      "email": "antoine.zink@culture.gouv.fr",
+      "@id": "https://orcid.org/0000-0001-7146-1101"
+    }
+  ],
+  "softwareSuggestions": [
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "knitr",
+      "name": "knitr",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=knitr"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "rmarkdown",
+      "name": "rmarkdown",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=rmarkdown"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "identifier": "RLumModel",
+      "name": "RLumModel",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=RLumModel"
+    }
+  ],
+  "softwareRequirements": {
+    "1": {
+      "@type": "SoftwareApplication",
+      "identifier": "Slice",
+      "name": "Slice"
+    },
+    "2": {
+      "@type": "SoftwareApplication",
+      "identifier": "OSLpack",
+      "name": "OSLpack"
+    },
+    "3": {
+      "@type": "SoftwareApplication",
+      "identifier": "stats",
+      "name": "stats"
+    },
+    "4": {
+      "@type": "SoftwareApplication",
+      "identifier": "coda",
+      "name": "coda",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=coda"
+    },
+    "5": {
+      "@type": "SoftwareApplication",
+      "identifier": "Luminescence",
+      "name": "Luminescence",
+      "provider": {
+        "@id": "https://cran.r-project.org",
+        "@type": "Organization",
+        "name": "Comprehensive R Archive Network (CRAN)",
+        "url": "https://cran.r-project.org"
+      },
+      "sameAs": "https://CRAN.R-project.org/package=Luminescence"
+    },
+    "6": {
+      "@type": "SoftwareApplication",
+      "identifier": "R",
+      "name": "R",
+      "version": ">= 3.5.0"
+    },
+    "SystemRequirements": null
+  },
+  "fileSize": "2123.16KB"
+}
