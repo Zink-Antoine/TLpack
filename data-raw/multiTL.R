@@ -2,7 +2,8 @@
 require(RLumModel)
 require(Luminescence)
 
-#The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ, corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
+#The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
+#corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
 
 irradiation_dose <- c(200,200,200,400,400,400,600,600,600)
 
