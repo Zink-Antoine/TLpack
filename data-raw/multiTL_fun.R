@@ -1,8 +1,11 @@
 #' multiTL example from RLumModel
 # version sous forme de fonction
 #'
-#' @param irradiation_dose [list] (**required**) irradiation dose
-#' @param model [list] (**required**) model
+#' @param irradiation_dose [list] (**with default**) irradiation dose
+#' @param model [list] (**with default**) model as RLumModel
+#' @param scatter [distribution function] (**with default**) a distribution function to scatter the glow curves
+#' @param noise_a [scalar] (**with default**) parameter a for noise distribution
+#' @param noise_b [scalar] (**with default**) parameter b for noise distribution
 #'
 #' @return  a dataset containing multiples TL calculated with RLumModel
 #'
@@ -17,10 +20,9 @@
 #'
 #' }
 #'
-require(RLumModel)
-require(Luminescence)
+
 'multiTL_fun'<-
-  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001"){
+  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001",scatter=runif(1,0.8,1.2),noise_a=0.9,noise_b=1.1){
 #The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
 #corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
 
@@ -31,7 +33,7 @@ model.output <- lapply(irradiation_dose, function(x){
                    TL=c(20,400,5))
   data <- model_LuminescenceSignals(
     sequence = sequence,
-    model = "Bailey2001",
+    model,
     plot = FALSE,
     verbose = FALSE,
     simulate_sample_history = TRUE )
@@ -55,10 +57,12 @@ plot_RLum( object = TL_curve.merged,
 
 y<-x<-array(dim=c(n.pt,n.irr))
 
+## scattering and/or noising glow curves
 for (i in 1:n.irr){
   x[,i]<-round(get_TL_curve.merged[[i]]@data [,1],1)
-  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*runif(1,0.8,1.2)
+  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter*runif(n.pt,noise_a,noise_b)#choix distribution noise ?
 }
+
 
 ##plot
 plot(x[,c(7,8,9)],y[,c(7,8,9)],
