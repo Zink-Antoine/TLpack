@@ -2,6 +2,7 @@
 # version sous forme de fonction
 #'
 #' @param irradiation_dose [list] (**required**) irradiation dose
+#' @param model [list] (**required**) model
 #'
 #' @return  a dataset containing multiples TL calculated with RLumModel
 #'
@@ -19,7 +20,7 @@
 require(RLumModel)
 require(Luminescence)
 'multiTL_fun'<-
-  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600)){
+  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001"){
 #The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
 #corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
 
