@@ -1,7 +1,7 @@
 #' multiTL example from RLumModel
 # version sous forme de fonction
 #'
-#' @param file [Risoe.BINfileData-class] (**required**) the BIN/BINX file(s)
+#' @param irradiation_dose [list] (**required**) irradiation dose
 #'
 #' @return  a dataset containing multiples TL calculated with RLumModel
 #'
@@ -19,11 +19,10 @@
 require(RLumModel)
 require(Luminescence)
 'multiTL_fun'<-
-  function(){
+  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600)){
 #The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
 #corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
 
-irradiation_dose <- c(200,200,200,400,400,400,600,600,600)
 
 model.output <- lapply(irradiation_dose, function(x){
   sequence <- list(IRR = c(20, x, 0.1),
