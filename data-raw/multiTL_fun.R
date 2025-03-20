@@ -22,7 +22,9 @@
 #'
 
 'multiTL_fun'<-
-  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001",scatter=runif(1,0.8,1.2),noise_a=0.9,noise_b=1.1){
+  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001",
+           scatter=runif(1,0.8,1.2),noise_a=0.9,noise_b=1.1,
+           distri="runif(n,a,b)"){
 #The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
 #corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
 
@@ -57,10 +59,12 @@ plot_RLum( object = TL_curve.merged,
 
 y<-x<-array(dim=c(n.pt,n.irr))
 
+distri_noise<-parse(text=distri)
+
 ## scattering and/or noising glow curves
 for (i in 1:n.irr){
   x[,i]<-round(get_TL_curve.merged[[i]]@data [,1],1)
-  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter*runif(n.pt,noise_a,noise_b)#choix distribution noise ?
+  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter*eval(distri_noise, list(n=n.pt,a=noise_a,b=noise_b))#fonction avec unif mais pas avec norm
 }
 
 
