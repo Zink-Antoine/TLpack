@@ -2,10 +2,11 @@
 # version sous forme de fonction
 #'
 #' @param irradiation_dose [list] (**with default**) irradiation dose
-#' @param model [list] (**with default**) model as RLumModel
-#' @param scatter [distribution function] (**with default**) a distribution function to scatter the glow curves
-#' @param noise_a [scalar] (**with default**) parameter a for noise distribution
-#' @param noise_b [scalar] (**with default**) parameter b for noise distribution
+#' @param model [string] (**with default**) model as RLumModel
+#' @param distri_scatter [string] (**with default**) a distribution function to scatter the glow curves.
+#' @param par_scatter [list] (**with default**) scatter parameters associated to scatter distribution.
+#' @param distri_noise [string] (**with default**) a distribution function to noise the glow curve.
+#' @param par_noise [list] (**with default**) noise parameter associated to the noise distribution.
 #'
 #' @return  a dataset containing multiples TL calculated with RLumModel
 #'
@@ -22,11 +23,11 @@
 #'
 
 'multiTL_fun'<-
-  function(irradiation_dose=c(200,200,200,400,400,400,600,600,600),model = "Bailey2001",
-           scatter=runif(1,0.8,1.2),noise_a=0.9,noise_b=1.1,
-           distri="runif(n,a,b)"){
-#The simulations were performed at 200 sβ, considered as the natural irradiation, and at 400 and 800 sβ,
-#corresponding respectively to Nat +200 sβ and Nat + 400 sβ.
+  function(irradiation_dose=c(20,20,20,40,40,40,60,60,60),model = "Bailey2001",
+           distri_scatter="runif(1,s,t)",par_scatter=list(s=0.8,t=1.2),
+           distri_noise="runif(n,a,b)",par_noise=list(a=0.9,b=1.1)){
+#The simulations were performed at 20 sβ, considered as the natural irradiation, and at 40 and 80 sβ,
+#corresponding respectively to Nat +20 sβ and Nat + 40 sβ.
 
 
 model.output <- lapply(irradiation_dose, function(x){
@@ -59,12 +60,20 @@ plot_RLum( object = TL_curve.merged,
 
 y<-x<-array(dim=c(n.pt,n.irr))
 
-distri_noise<-parse(text=distri)
+scatter<-function(distri_scatter,par_scatter){
+  dscatter<-parse(text=distri_scatter)
+  eval(dscatter, par_scatter)
+}
+
+noise<-function(distri_noise,par_noise){
+  dnoise<-parse(text=distri_noise)
+  eval(dnoise, c(list(n=n.pt),par_noise))
+}
 
 ## scattering and/or noising glow curves
 for (i in 1:n.irr){
   x[,i]<-round(get_TL_curve.merged[[i]]@data [,1],1)
-  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter*eval(distri_noise, list(n=n.pt,a=noise_a,b=noise_b))#fonction avec unif mais pas avec norm
+  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter(distri_scatter,par_scatter)*noise(distri_noise,par_noise)#
 }
 
 
