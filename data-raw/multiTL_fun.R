@@ -90,6 +90,6 @@ lines(x[,c(1,2,3)],y[,c(1,2,3)],col=2)
 legend("topright",
        legend = paste("dose",unique(irradiation_dose)," Gy"),col=c(2,3,4),lty=1)
 
-multiTL<-list( Dose=c(0,0,0,200,200,200,400,400,400), df.T=x, df.y=y, n.iter=10 )
+multiTL<-list( Dose=irradiation_dose-irradiaton_dose[1], df.T=x, df.y=y, n.iter=10 )
 
 }
