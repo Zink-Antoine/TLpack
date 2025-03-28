@@ -14,7 +14,7 @@ multiTL
 \description{
 TL example from RLumModel
 a dataset containing multiples TL calculated with RLumModel
-call function "model_LuminescenceSignals", model = "Bailey2001"
+call function "model_LuminescenceSignals", model = "Bailey2001" test
 simulate_sample_history = TRUE
 }
 \keyword{datasets}

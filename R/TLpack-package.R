@@ -5,7 +5,8 @@
 #' @docType package
 #' @name <TLpack>
 #' @import OSLpack
-#' @importFrom graphics axis box lines par plot.default text title
+#' @import graphics
+"_PACKAGE"
 
 NULL
 

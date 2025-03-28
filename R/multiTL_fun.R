@@ -1,24 +1,25 @@
+#' multiTL_fun
+#'
 #' multiTL example from RLumModel
-# version sous forme de fonction
 #'
-#' @param irradiation_dose [list] (**with default**) irradiation dose
-#' @param model [string] (**with default**) model as RLumModel
-#' @param distri_scatter [string] (**with default**) a distribution function to scatter the glow curves.
-#' @param par_scatter [list] (**with default**) scatter parameters associated to scatter distribution.
-#' @param distri_noise [string] (**with default**) a distribution function to noise the glow curve.
-#' @param par_noise [list] (**with default**) noise parameter associated to the noise distribution.
-#'
-#' @return  a dataset containing multiples TL calculated with RLumModel
-#'
-#' @importFrom graphics axis box lines par plot.default text title
+#' @param irradiation_dose [numeric][list] (**with default**) irradiation dose
+#' @param model [character] (**with default**) model as RLumModel
+#' @param distri_scatter [character] (**with default**) a distribution function to scatter the glow curves.
+#' @param par_scatter [numeric][list] (**with default**) scatter parameters associated to scatter distribution.
+#' @param distri_noise [character] (**with default**) a distribution function to noise the glow curve.
+#' @param par_noise [numeric][list] (**with default**) noise parameter associated to the noise distribution.
 #'
 #' @import RLumModel
 #' @import Luminescence
 #'
+#' @return  a dataset containing multiples TL calculated with RLumModel
+#'
+#' @export
+#'
 #' @examples
 #'
 #' \dontrun{
-#'
+#' multiTL_fun()
 #' }
 #'
 
@@ -26,8 +27,8 @@
   function(irradiation_dose=c(20,20,20,40,40,40,60,60,60),model = "Bailey2001",
            distri_scatter="runif(1,s,t)",par_scatter=list(s=0.8,t=1.2),
            distri_noise="runif(n,a,b)",par_noise=list(a=0.9,b=1.1)){
-#The simulations were performed at 20 sβ, considered as the natural irradiation, and at 40 and 80 sβ,
-#corresponding respectively to Nat +20 sβ and Nat + 40 sβ.
+#The simulations were performed at 20 s, considered as the natural irradiation, and at 40 and 80 s,
+#corresponding respectively to Nat +20 s and Nat + 40 s.
 
 
 model.output <- lapply(irradiation_dose, function(x){
@@ -52,7 +53,7 @@ n.irr<-length(irradiation_dose)
 
 ##plot
 plot_RLum( object = TL_curve.merged,
-           xlab = "Temperature [°C]",
+           xlab = paste("Temperature (\u00B0","C)",sep=""),
            ylab = "TL signal [a.u.]",
            main = "TL signal with various dose",
            legend.text = paste("dose", irradiation_dose, "Gy"),
@@ -81,7 +82,7 @@ for (i in 1:n.irr){
 plot(x[,c(7,8,9)],y[,c(7,8,9)],
      col=4,
      type="l",
-     xlab = "Temperature [°C]",
+     xlab = paste("Temperature (\u00B0","C)",sep=""),
      ylab = "TL signal [a.u.]",
      main = "TL signal with various dose"
 )
@@ -90,6 +91,6 @@ lines(x[,c(1,2,3)],y[,c(1,2,3)],col=2)
 legend("topright",
        legend = paste("dose",unique(irradiation_dose)," Gy"),col=c(2,3,4),lty=1)
 
-multiTL<-list( Dose=irradiation_dose-irradiaton_dose[1], df.T=x, df.y=y, n.iter=10 )
+multiTL<-list( Dose=irradiation_dose-irradiation_dose[1], df.T=x, df.y=y, n.iter=10 )
 
 }

@@ -1,2 +1,5 @@
-^TLpack\.Rproj$
+^TLpack-main\.Rproj$
 ^\.Rproj\.user$
+devtools_history.R
+codemeta.json
+^data-raw$

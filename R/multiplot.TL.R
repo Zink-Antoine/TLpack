@@ -23,7 +23,6 @@
 #'
 #' @return plot figures
 #'
-#' @importFrom graphics axis box lines par plot.default text title
 #'
 #' @export
 #'

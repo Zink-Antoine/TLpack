@@ -2,8 +2,21 @@
 % Please edit documentation in R/TLpack-package.R
 \docType{package}
 \name{<TLpack>}
+\alias{TLpack}
+\alias{TLpack-package}
 \alias{<TLpack>}
 \title{TLpack}
 \description{
 Various function to analyze and plot TL measurement using MCMC code based on Gibbs and Slice samplers.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item Report bugs at \url{https://github.com/Zink-Antoine/TLpack/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Antoine Zink \email{antoine.zink@culture.gouv.fr} (\href{https://orcid.org/0000-0001-7146-1101}{ORCID})
+
 }
