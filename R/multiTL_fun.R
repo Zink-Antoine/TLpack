@@ -2,12 +2,11 @@
 #'
 #' multiTL example from RLumModel
 #'
+#' @inheritParams RLumModel::model_LuminescenceSignals
+#'
 #' @param irradiation_dose [numeric][list] (**with default**) irradiation dose
-#' @param model [character] (**with default**) model as RLumModel
 #' @param distri_scatter [character] (**with default**) a distribution function to scatter the glow curves.
-#' @param par_scatter [numeric][list] (**with default**) scatter parameters associated to scatter distribution.
 #' @param distri_noise [character] (**with default**) a distribution function to noise the glow curve.
-#' @param par_noise [numeric][list] (**with default**) noise parameter associated to the noise distribution.
 #'
 #' @import RLumModel
 #' @import Luminescence
@@ -25,8 +24,8 @@
 
 'multiTL_fun'<-
   function(irradiation_dose=c(20,20,20,40,40,40,60,60,60),model = "Bailey2001",
-           distri_scatter="runif(1,s,t)",par_scatter=list(s=0.8,t=1.2),
-           distri_noise="runif(n,a,b)",par_noise=list(a=0.9,b=1.1)){
+           distri_scatter="runif(1,min=0.8,max=1.2)",
+           distri_noise="rnorm(n,mean=1,sd=0.1)"){
 #The simulations were performed at 20 s, considered as the natural irradiation, and at 40 and 80 s,
 #corresponding respectively to Nat +20 s and Nat + 40 s.
 
@@ -61,20 +60,19 @@ plot_RLum( object = TL_curve.merged,
 
 y<-x<-array(dim=c(n.pt,n.irr))
 
-scatter<-function(distri_scatter,par_scatter){
-  dscatter<-parse(text=distri_scatter)
-  eval(dscatter, par_scatter)
+scatter<-function(distri_scatter){
+  eval(parse(text=distri_scatter))
 }
 
-noise<-function(distri_noise,par_noise){
+noise<-function(distri_noise){
   dnoise<-parse(text=distri_noise)
-  eval(dnoise, c(list(n=n.pt),par_noise))
+  eval(dnoise, c(list(n=n.pt)))
 }
 
 ## scattering and/or noising glow curves
 for (i in 1:n.irr){
   x[,i]<-round(get_TL_curve.merged[[i]]@data [,1],1)
-  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter(distri_scatter,par_scatter)*noise(distri_noise,par_noise)#
+  y[,i]<-get_TL_curve.merged[[i]]@data [,2]*scatter(distri_scatter)*noise(distri_noise)#
 }
 
 
