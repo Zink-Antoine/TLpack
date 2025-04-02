@@ -5,15 +5,13 @@
 \title{multiTL_fun}
 \usage{
 multiTL_fun(
-  irradiation_dose = c(20, 20, 20, 40, 40, 40, 60, 60, 60),
+  dose = c(20, 20, 20, 40, 40, 40, 60, 60, 60),
   model = "Bailey2001",
   distri_scatter = "runif(1,min=0.8,max=1.2)",
   distri_noise = "rnorm(n,mean=1,sd=0.1)"
 )
 }
 \arguments{
-\item{irradiation_dose}{\link[=list]{numeric} (\strong{with default}) irradiation dose}
-
 \item{model}{\link{character} (\strong{required}): set model to be used. Available models are:
 \code{"Bailey2001"}, \code{"Bailey2002"}, \code{"Bailey2004"}, \code{"Pagonis2007"}, \code{"Pagonis2008"}, \code{"Friedrich2017"}, \code{"Friedrich2018"}, \verb{"Peng2022}" and for own models \code{"customized"} (or \code{"customised"}).
 Note: When model = \code{"customized"}/\verb{"customised} is set, the argument \code{own_parameters} has to be set.}
