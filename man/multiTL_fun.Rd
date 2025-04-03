@@ -8,10 +8,13 @@ multiTL_fun(
   dose = c(20, 20, 20, 40, 40, 40, 60, 60, 60),
   model = "Bailey2001",
   distri_scatter = "runif(1,min=0.8,max=1.2)",
-  distri_noise = "rnorm(n,mean=1,sd=0.1)"
+  distri_noise = "rnorm(n,mean=1,sd=0.1)",
+  SeqType = "TL=c(20,400,5)"
 )
 }
 \arguments{
+\item{dose}{\link[=list]{numeric} (\strong{with default}) irradiation dose in the sequence}
+
 \item{model}{\link{character} (\strong{required}): set model to be used. Available models are:
 \code{"Bailey2001"}, \code{"Bailey2002"}, \code{"Bailey2004"}, \code{"Pagonis2007"}, \code{"Pagonis2008"}, \code{"Friedrich2017"}, \code{"Friedrich2018"}, \verb{"Peng2022}" and for own models \code{"customized"} (or \code{"customised"}).
 Note: When model = \code{"customized"}/\verb{"customised} is set, the argument \code{own_parameters} has to be set.}
@@ -19,6 +22,8 @@ Note: When model = \code{"customized"}/\verb{"customised} is set, the argument \
 \item{distri_scatter}{\link{character} (\strong{with default}) a distribution function to scatter the glow curves.}
 
 \item{distri_noise}{\link{character} (\strong{with default}) a distribution function to noise the glow curve.}
+
+\item{SeqType}{\link{character} (\strong{with default}) the type of measurement TL or OSL}
 }
 \value{
 a dataset containing multiples TL calculated with RLumModel

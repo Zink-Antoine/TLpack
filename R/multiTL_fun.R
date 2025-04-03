@@ -7,6 +7,7 @@
 #' @param dose [numeric][list] (**with default**) irradiation dose in the sequence
 #' @param distri_scatter [character] (**with default**) a distribution function to scatter the glow curves.
 #' @param distri_noise [character] (**with default**) a distribution function to noise the glow curve.
+#' @param SeqType [character] (**with default**) the type of measurement TL or OSL
 #'
 #' @import RLumModel
 #' @import Luminescence
@@ -26,23 +27,29 @@
   function(dose=c(20,20,20,40,40,40,60,60,60),model = "Bailey2001",
            distri_scatter="runif(1,min=0.8,max=1.2)",
            distri_noise="rnorm(n,mean=1,sd=0.1)",
-           SeqType="TL=c(60,100,50)"){
+           SeqType="TL=c(20,400,5)"){
 
-temp<-strsplit(SeqType,"=")
-recordType<-paste(temp[[1]][1],"$",sep="")
+temp<-strsplit(SeqType,"=")[[1]]
+Type<-paste(temp[1])
+Param<-paste(temp[2])
 
 model.output <- lapply(dose, function(x){
-  sequence <- list(IRR = c(20, x, 0.1),
-                   #PH = c(220, 10, 5),
-                   eval(parse(text=SeqType))#erroné .()?
+  sequence <- list(IRR = c(20, x, 0.1)
                   )
+
+
+  eval(substitute(
+    var <- val,
+    list(var=str2lang(paste("sequence$",Type,sep="")),val=str2lang(Param)
+    )))
+
   data <- model_LuminescenceSignals(
     sequence = sequence,
     model,
     plot = FALSE,
     verbose = FALSE,
     simulate_sample_history = TRUE )
-  return(get_RLum(data, recordType = recordType, drop = FALSE))
+  return(get_RLum(data, recordType = paste(Type,"$",sep=""), drop = FALSE))
 })
 
 ##combine output curves
